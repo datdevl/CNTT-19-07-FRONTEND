@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý thành viên</title>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body{
+            font-family: Arial;
+            padding: 30px;
+        }
+        input{
+            padding: 8px;
+            width: 250px;
+        }
+        button{
+            padding: 8px 12px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        li{
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Danh sách thành viên</h1>
+    <input type="text" id="tenTV" placeholder="Nhập tên thành viên">
+    <button id="them">Thêm</button>
+    <ul id="danhsach"></ul>
+    <script>
+        $("#them").click(function(){
+            let ten = $("#tenTV").val();
+            if(ten == ""){
+                alert("Vui lòng nhập tên");
+                return;
+            }
+            let item = `
+                <li>
+                    <span class="ten">${ten}</span>
+                    <button class="sua">Sửa</button>
+                    <button class="xoa">Xóa</button>
+                </li>
+            `;
+            $("#danhsach").append(item);
+            $("#tenTV").val("");
+        });
+        $(document).on("click", ".xoa", function(){
+            $(this).closest("li").remove();
+        });
+        $(document).on("click", ".sua", function(){
+            let tenCu = $(this).siblings(".ten").text();
+            let tenMoi = prompt("Nhập tên mới", tenCu);
+            if(tenMoi != null && tenMoi != ""){
+                $(this).siblings(".ten").text(tenMoi);
+            }
+        });
+    </script>
+</body>
+</html>

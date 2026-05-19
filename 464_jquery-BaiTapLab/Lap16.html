@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ đếm tương tác</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body{
+            font-family: Arial;
+            text-align: center;
+            margin-top: 50px;
+        }
+        #soDem{
+            font-size: 60px;
+            margin: 20px;
+            font-weight: bold;
+        }
+        button{
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .duong{
+            color: green;
+        }
+        .am{
+            color: red;
+        }
+        .khong{
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bộ đếm lượt tương tác</h1>
+    <div id="soDem" class="khong">0</div>
+    <button id="giam">-</button>
+    <button id="tang">+</button>
+    <button id="reset">Reset</button>
+    <button id="tang10">+10</button>
+    <script>
+        let dem = 0;
+        function capNhat(){
+            $("#soDem").text(dem);
+            if(dem > 0){
+                $("#soDem").removeClass();
+                $("#soDem").addClass("duong");
+            }
+            else if(dem < 0){
+                $("#soDem").removeClass();
+                $("#soDem").addClass("am");
+            }
+            else{
+                $("#soDem").removeClass();
+                $("#soDem").addClass("khong");
+            }
+        }
+        $("#tang").click(function(){
+            dem++;
+            capNhat();
+        });
+        $("#giam").click(function(){
+            dem--;
+            capNhat();
+        });
+        $("#reset").click(function(){
+            dem = 0;
+            capNhat();
+        });
+        $("#tang10").click(function(){
+            dem += 10;
+            capNhat();
+        });
+    </script>
+</body>
+</html>

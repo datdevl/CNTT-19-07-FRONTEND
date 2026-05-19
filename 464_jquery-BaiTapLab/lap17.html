@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng đơn giản</title>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body{
+            font-family: Arial;
+            padding: 30px;
+            background: #f5f5f5;
+        }
+        .sanpham{
+            width: 350px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+            text-align: center;
+        }
+        img{
+            width: 250px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        button{
+            padding: 8px 15px;
+            font-size: 18px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        #soluong{
+            font-size: 20px;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        #tong{
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="sanpham">
+        <img src="https://tse3.mm.bing.net/th/id/OIP.W296XqXKRn4DP6oyS49c2gHaHa?rs=1&pid=ImgDetMain&o=7&rm=3">
+        <h2>iPhone 17 Pro Max</h2>
+        <p>
+            Đơn giá:
+            <span id="gia">50000000</span> VNĐ
+        </p>
+        <button id="giam">-</button>
+        <span id="soluong">1</span>
+        <button id="tang">+</button>
+        <h3>
+            Thành tiền:
+            <span id="tong">50000000</span> VNĐ
+        </h3>
+    </div>
+    <script>
+        let soLuong = 1;
+        let donGia = 50000000;
+        function tinhTien(){
+            let tongTien = soLuong * donGia;
+            $("#soluong").text(soLuong);
+            $("#tong").text(
+                tongTien.toLocaleString("vi-VN")
+            );
+        }
+        $("#tang").click(function(){
+            soLuong++;
+            tinhTien();
+        });
+        $("#giam").click(function(){
+            if(soLuong > 1){
+                soLuong--;
+                tinhTien();
+            }
+            else{
+                alert("Số lượng không được nhỏ hơn 1");
+            }
+        });
+    </script>
+</body>
+</html>
