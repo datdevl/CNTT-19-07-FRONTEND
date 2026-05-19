@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài Lab 18 - Quản lý thành viên</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 30px auto; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 15px; }
+        input[type="text"] { padding: 8px; width: 70%; font-size: 14px; }
+        button { padding: 8px 15px; font-size: 14px; cursor: pointer; }
+        .btn-add { background-color: #28a745; color: white; border: none; }
+        .btn-edit { background-color: #ffc107; color: black; border: none; margin-right: 5px; }
+        .btn-delete { background-color: #dc3545; color: white; border: none; }
+        .search-box { width: 95% !important; margin-bottom: 15px; background-color: #f9f9f9; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+    <h2>Quản Lý Danh Sách Thành Viên</h2>
+
+    <div class="form-group">
+        <input type="text" id="search-input" class="search-box" placeholder="🔍 Nhập tên thành viên cần tìm...">
+    </div>
+
+    <div class="form-group">
+        <input type="text" id="member-name" placeholder="Nhập tên thành viên...">
+        <button class="btn-add" id="btn-submit">Thêm Mới</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên thành viên</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody id="member-list">
+            <tr class="member-row">
+                <td class="stt">1</td>
+                <td class="name-text">Phạm Trung Kiên</td>
+                <td>
+                    <button class="btn-edit">Sửa</button>
+                    <button class="btn-delete">Xóa</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function() {
+            let editingRow = null; // Biến tạm lưu dòng đang được chỉnh sửa
+
+            // Hàm tự động đánh số thứ tự (Yêu cầu mở rộng) 
+            function updateSTT() {
+                $('#member-list .member-row').each(function(index) {
+                    $(this).find('.stt').text(index + 1);
+                });
+            }
+
+            // 2. Xử lý hành động Thêm mới hoặc Cập nhật [cite: 46, 48]
+            $('#btn-submit').click(function() {
+                let name = $('#member-name').val().trim();
+                
+                if (name === "") {
+                    alert("Vui lòng nhập tên thành viên!");
+                    return;
+                }
+
+                if (editingRow === null) {
+                    // CHẾ ĐỘ THÊM MỚI [cite: 46]
+                    let newRow = `
+                        <tr class="member-row">
+                            <td class="stt"></td>
+                            <td class="name-text">${name}</td>
+                            <td>
+                                <button class="btn-edit">Sửa</button>
+                                <button class="btn-delete">Xóa</button>
+                            </td>
+                        </tr>`;
+                    
+                    $('#member-list').append(newRow); // Chèn dòng mới bằng append [cite: 36, 46]
+                } else {
+                    // CHẾ ĐỘ SỬA (Cập nhật lại tên trực tiếp tại dòng đó) [cite: 42, 48]
+                    editingRow.find('.name-text').text(name);
+                    $('#btn-submit').text('Thêm Mới').removeClass('btn-edit').addClass('btn-add');
+                    editingRow = null; // Reset biến tạm
+                }
+
+                $('#member-name').val(''); // Xóa trống input sau khi xong [cite: 36]
+                updateSTT(); // Đánh lại số thứ tự tự động 
+            });
+
+            // 3. Xử lý thao tác Xóa (Sử dụng Event Delegation để nhận diện phần tử động) [cite: 36, 47]
+            $('#member-list').on('click', '.btn-delete', function() {
+                if (confirm("Bạn có chắc chắn muốn xóa thành viên này?")) {
+                    $(this).closest('.member-row').remove(); // Định vị dòng chính xác và xóa [cite: 36, 47]
+                    updateSTT(); // Cập nhật lại số thứ tự sau khi xóa 
+                }
+            });
+
+            // 4. Xử lý thao tác Sửa - Đưa dữ liệu ngược lên form [cite: 48]
+            $('#member-list').on('click', '.btn-edit', function() {
+                editingRow = $(this).closest('.member-row'); // Lưu dòng đang chọn [cite: 36]
+                let currentName = editingRow.find('.name-text').text(); // Lấy tên hiện tại
+                
+                $('#member-name').val(currentName).focus(); // Đưa dữ liệu lên ô nhập liệu [cite: 48]
+                $('#btn-submit').text('Cập nhật').removeClass('btn-add').addClass('btn-edit'); // Đổi trạng thái nút
+            });
+
+            // Yêu cầu mở rộng: Tìm kiếm thành viên thời gian thực (Real-time Search) 
+            $('#search-input').on('keyup', function() {
+                let value = $(this).val().toLowerCase();
+                $('#member-list .member-row').filter(function() {
+                    $(this).toggle($(this).find('.name-text').text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
