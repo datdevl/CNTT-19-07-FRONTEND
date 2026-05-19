@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 17 – Giỏ Hàng Đơn Giản</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #faf7f2;
+    min-height: 100vh;
+    padding: 2.5rem 1rem;
+    color: #2c2c2c;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    border-bottom: 2px solid #2c2c2c;
+    padding-bottom: 1rem;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    line-height: 1;
+  }
+  .header-sub {
+    font-size: 0.78rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .cart-count-badge {
+    background: #2c2c2c;
+    color: #faf7f2;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .product-row {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    border: 1px solid #ede9e1;
+    transition: box-shadow 0.2s;
+  }
+  .product-row:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+
+  .emoji-thumb {
+    font-size: 2.2rem;
+    width: 58px;
+    height: 58px;
+    background: #faf7f2;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid #ede9e1;
+  }
+  .prod-meta { flex: 1; }
+  .prod-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+  }
+  .prod-unit-price {
+    font-size: 0.78rem;
+    color: #999;
+  }
+
+  .qty-block {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1.5px solid #ede9e1;
+    border-radius: 30px;
+    overflow: hidden;
+  }
+  .qty-btn {
+    background: none;
+    border: none;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #999;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .qty-btn:hover { background: #faf7f2; color: #2c2c2c; }
+  .qty-btn:disabled { color: #ddd; cursor: default; }
+  .qty-display {
+    width: 32px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #2c2c2c;
+    border-left: 1px solid #ede9e1;
+    border-right: 1px solid #ede9e1;
+    padding: 6px 0;
+    line-height: 1;
+  }
+
+  .prod-subtotal {
+    min-width: 100px;
+    text-align: right;
+  }
+  .subtotal-amount {
+    font-weight: 700;
+    font-size: 1rem;
+    display: block;
+  }
+  .subtotal-label {
+    font-size: 0.72rem;
+    color: #bbb;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Tổng hóa đơn */
+  .summary-box {
+    background: #2c2c2c;
+    border-radius: 16px;
+    padding: 1.4rem 1.6rem;
+    color: #faf7f2;
+    margin-top: 1.5rem;
+  }
+  .summary-rows { margin-bottom: 1rem; }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    padding: 5px 0;
+    color: #aaa;
+    border-bottom: 1px solid #3a3a3a;
+  }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-row .row-name { color: #ddd; }
+  .total-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-top: 1px solid #444;
+    padding-top: 1rem;
+    margin-top: 0.5rem;
+  }
+  .total-label-big {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+  }
+  #grand-total {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: #fff;
+  }
+
+  .checkout-btn {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.85rem;
+    background: #c8a96e;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+  }
+  .checkout-btn:hover { background: #b5954e; }
+
+  .flash {
+    animation: flashAnim 0.25s ease;
+  }
+  @keyframes flashAnim {
+    0%  { transform: scale(1); }
+    50% { transform: scale(1.12); }
+    100%{ transform: scale(1); }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div>
+      <h1>Giỏ Hàng</h1>
+    </div>
+    <div class="cart-count-badge" id="item-count">3</div>
+  </header>
+
+  <div id="product-list">
+
+    <div class="product-row" data-price="250000" data-name="Pizza Margherita">
+      <div class="emoji-thumb">🍕</div>
+      <div class="prod-meta">
+        <div class="prod-name">Pizza Margherita</div>
+        <div class="prod-unit-price">250.000 ₫ / chiếc</div>
+      </div>
+      <div class="qty-block">
+        <button class="qty-btn btn-minus" title="Giảm">−</button>
+        <span class="qty-display">1</span>
+        <button class="qty-btn btn-plus" title="Tăng">+</button>
+      </div>
+      <div class="prod-subtotal">
+        <span class="subtotal-amount">250.000 ₫</span>
+        <span class="subtotal-label">thành tiền</span>
+      </div>
+    </div>
+
+    <div class="product-row" data-price="35000" data-name="Cà Phê Sữa Đá">
+      <div class="emoji-thumb">☕</div>
+      <div class="prod-meta">
+        <div class="prod-name">Cà Phê Sữa Đá</div>
+        <div class="prod-unit-price">35.000 ₫ / ly</div>
+      </div>
+      <div class="qty-block">
+        <button class="qty-btn btn-minus" title="Giảm">−</button>
+        <span class="qty-display">2</span>
+        <button class="qty-btn btn-plus" title="Tăng">+</button>
+      </div>
+      <div class="prod-subtotal">
+        <span class="subtotal-amount">70.000 ₫</span>
+        <span class="subtotal-label">thành tiền</span>
+      </div>
+    </div>
+
+    <div class="product-row" data-price="180000" data-name="Cơm Bento Nhật">
+      <div class="emoji-thumb">🍱</div>
+      <div class="prod-meta">
+        <div class="prod-name">Cơm Bento Nhật</div>
+        <div class="prod-unit-price">180.000 ₫ / hộp</div>
+      </div>
+      <div class="qty-block">
+        <button class="qty-btn btn-minus" title="Giảm">−</button>
+        <span class="qty-display">1</span>
+        <button class="qty-btn btn-plus" title="Tăng">+</button>
+      </div>
+      <div class="prod-subtotal">
+        <span class="subtotal-amount">180.000 ₫</span>
+        <span class="subtotal-label">thành tiền</span>
+      </div>
+    </div>
+
+    <div class="product-row" data-price="75000" data-name="Trà Sữa Trân Châu">
+      <div class="emoji-thumb">🧋</div>
+      <div class="prod-meta">
+        <div class="prod-name">Trà Sữa Trân Châu</div>
+        <div class="prod-unit-price">75.000 ₫ / ly</div>
+      </div>
+      <div class="qty-block">
+        <button class="qty-btn btn-minus" title="Giảm">−</button>
+        <span class="qty-display">1</span>
+        <button class="qty-btn btn-plus" title="Tăng">+</button>
+      </div>
+      <div class="prod-subtotal">
+        <span class="subtotal-amount">75.000 ₫</span>
+        <span class="subtotal-label">thành tiền</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="summary-box">
+    <div class="summary-rows" id="summary-rows"></div>
+    <div class="total-line">
+      <span class="total-label-big">Tổng cộng</span>
+      <span id="grand-total">575.000 ₫</span>
+    </div>
+    <button class="checkout-btn">🛒 Tiến Hành Thanh Toán</button>
+  </div>
+</div>
+
+<script>
+$(function() {
+  function vnd(n) {
+    return n.toLocaleString('vi-VN') + ' ₫';
+  }
+
+  function getQty($row) {
+    return parseInt($row.find('.qty-display').text()) || 0;
+  }
+
+  function calcAll() {
+    var total = 0;
+    var rows = '';
+    $('#product-list .product-row').each(function() {
+      var $r   = $(this);
+      var price = parseInt($r.data('price'));
+      var qty   = getQty($r);
+      var name  = $r.data('name');
+      var sub   = price * qty;
+      total += sub;
+      rows += '<div class="summary-row"><span class="row-name">' + name + ' × ' + qty + '</span><span>' + vnd(sub) + '</span></div>';
+    });
+    $('#summary-rows').html(rows);
+    var $gt = $('#grand-total');
+    $gt.text(vnd(total));
+    $gt.addClass('flash');
+    setTimeout(function() { $gt.removeClass('flash'); }, 260);
+
+    // tổng số mặt hàng
+    var totalQty = 0;
+    $('#product-list .product-row').each(function() { totalQty += getQty($(this)); });
+    $('#item-count').text(totalQty);
+  }
+
+  $('#product-list').on('click', '.btn-plus', function() {
+    var $row = $(this).closest('.product-row');
+    var $qty = $row.find('.qty-display');
+    var cur  = parseInt($qty.text());
+    $qty.text(cur + 1);
+    var price = parseInt($row.data('price'));
+    $row.find('.subtotal-amount').text(vnd(price * (cur + 1)));
+    $row.find('.btn-minus').prop('disabled', false);
+    calcAll();
+  });
+
+  $('#product-list').on('click', '.btn-minus', function() {
+    var $row = $(this).closest('.product-row');
+    var $qty = $row.find('.qty-display');
+    var cur  = parseInt($qty.text());
+    if (cur <= 1) return;
+    $qty.text(cur - 1);
+    var price = parseInt($row.data('price'));
+    $row.find('.subtotal-amount').text(vnd(price * (cur - 1)));
+    if (cur - 1 <= 1) $(this).prop('disabled', true);
+    calcAll();
+  });
+
+  // Khởi tạo
+  calcAll();
+});
+</script>
+</body>
+</html>

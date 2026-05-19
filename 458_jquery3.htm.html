@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 18 – Quản Lý Thành Viên</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: linear-gradient(135deg, #e8f0fe 0%, #f0f4ff 60%, #fce4ec 100%);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    color: #1a202c;
+  }
+
+  .app {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.6rem;
+  }
+  .top-bar h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a202c;
+  }
+  .top-bar h1 span { color: #4361ee; }
+  .stat-pill {
+    background: #4361ee;
+    color: #fff;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  /* Toolbar */
+  .toolbar {
+    background: #fff;
+    border-radius: 14px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 16px rgba(67,97,238,0.08);
+    border: 1px solid #e8edff;
+  }
+  .add-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .input-wrap {
+    flex: 1;
+    position: relative;
+  }
+  .input-wrap .icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    pointer-events: none;
+  }
+  .add-row input, .search-wrap input {
+    width: 100%;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0.6rem 0.9rem 0.6rem 2.4rem;
+    font-family: inherit;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: #f8faff;
+    color: #1a202c;
+  }
+  .add-row input:focus, .search-wrap input:focus {
+    border-color: #4361ee;
+    box-shadow: 0 0 0 3px rgba(67,97,238,0.12);
+    background: #fff;
+  }
+
+  .btn-add {
+    background: #4361ee;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 0.6rem 1.2rem;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .btn-add:hover { background: #3451d1; }
+  .btn-add:active { transform: scale(0.97); }
+
+  .search-wrap { position: relative; }
+  .search-wrap input { padding-left: 2.4rem; }
+
+  /* List */
+  .list-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 0.8rem 1rem;
+    box-shadow: 0 2px 16px rgba(67,97,238,0.08);
+    border: 1px solid #e8edff;
+    min-height: 80px;
+  }
+
+  #member-list { list-style: none; }
+
+  #member-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.6rem 0.5rem;
+    border-radius: 10px;
+    transition: background 0.15s;
+    border-bottom: 1px solid #f0f4ff;
+    animation: slideDown 0.22s ease;
+  }
+  #member-list li:last-child { border-bottom: none; }
+  #member-list li:hover { background: #f5f8ff; }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .num-badge {
+    min-width: 26px;
+    height: 26px;
+    background: #eef0ff;
+    color: #4361ee;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4361ee, #7b5ea7);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .member-name {
+    flex: 1;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #1a202c;
+  }
+  .member-edit-input {
+    flex: 1;
+    border: 1.5px solid #4361ee;
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-family: inherit;
+    font-size: 0.88rem;
+    outline: none;
+    color: #1a202c;
+    background: #f5f8ff;
+  }
+
+  .actions { display: flex; gap: 5px; }
+  .icon-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    transition: all 0.15s;
+    background: #f0f4ff;
+    color: #4361ee;
+  }
+  .icon-btn:hover.edit  { background: #fef3c7; color: #92400e; }
+  .icon-btn:hover.save  { background: #d1fae5; color: #065f46; }
+  .icon-btn:hover.del   { background: #fee2e2; color: #991b1b; }
+
+  .empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #a0aec0;
+  }
+  .empty-state .big-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .empty-state p { font-size: 0.85rem; }
+
+  .no-result {
+    text-align: center;
+    padding: 1rem;
+    color: #a0aec0;
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+
+  .hint {
+    font-size: 0.72rem;
+    color: #a0aec0;
+    margin-top: 6px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="top-bar">
+    <h1>Danh Sách <span>Thành Viên</span></h1>
+    <div class="stat-pill" id="count-pill">0 người</div>
+  </div>
+
+  <div class="toolbar">
+    <div class="add-row">
+      <div class="input-wrap">
+        <span class="icon">👤</span>
+        <input type="text" id="name-input" placeholder="Nhập tên thành viên mới..." />
+      </div>
+      <button class="btn-add" id="btn-add">
+        <span>＋</span> Thêm
+      </button>
+    </div>
+    <div class="search-wrap">
+      <span class="icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Tìm kiếm theo tên..." />
+    </div>
+    <div class="hint">Nhấn Enter để thêm nhanh • Tìm kiếm theo thời gian thực</div>
+  </div>
+
+  <div class="list-card">
+    <ul id="member-list">
+      <li class="empty-row">
+        <div class="empty-state">
+          <div class="big-icon">📋</div>
+          <p>Chưa có thành viên nào.<br>Hãy thêm người đầu tiên!</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<script>
+$(function() {
+  var memberIdCounter = 0;
+
+  /* ---- TIỆN ÍCH ---- */
+  function initials(name) {
+    var parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    return name.slice(0, 2).toUpperCase();
+  }
+
+  function escHtml(str) {
+    return $('<div>').text(str).html();
+  }
+
+  function updateCount() {
+    var n = $('#member-list li:not(.empty-row)').length;
+    $('#count-pill').text(n + ' người');
+  }
+
+  function renumber() {
+    $('#member-list li:not(.empty-row)').each(function(i) {
+      $(this).find('.num-badge').text(i + 1);
+    });
+    updateCount();
+
+    if ($('#member-list li:not(.empty-row)').length === 0) {
+      if ($('.empty-row').length === 0) {
+        $('#member-list').append(
+          '<li class="empty-row"><div class="empty-state"><div class="big-icon">📋</div><p>Chưa có thành viên nào.</p></div></li>'
+        );
+      }
+    } else {
+      $('.empty-row').remove();
+    }
+  }
+
+  function buildItem(name) {
+    memberIdCounter++;
+    var id  = 'member-' + memberIdCounter;
+    var ini = initials(name);
+    // Random màu avatar
+    var colors = [
+      ['#4361ee','#7b5ea7'], ['#06b6d4','#0284c7'],
+      ['#10b981','#059669'], ['#f59e0b','#d97706'],
+      ['#ec4899','#db2777']
+    ];
+    var c = colors[memberIdCounter % colors.length];
+    var avatarStyle = 'background: linear-gradient(135deg,' + c[0] + ',' + c[1] + ')';
+
+    return $('<li data-id="' + id + '">' +
+      '<div class="num-badge">?</div>' +
+      '<div class="avatar" style="' + avatarStyle + '">' + escHtml(ini) + '</div>' +
+      '<span class="member-name">' + escHtml(name) + '</span>' +
+      '<div class="actions">' +
+        '<button class="icon-btn edit" title="Sửa">✏️</button>' +
+        '<button class="icon-btn del" title="Xóa">🗑️</button>' +
+      '</div>' +
+    '</li>');
+  }
+
+  function addMember() {
+    var name = $('#name-input').val().trim();
+    if (!name) { $('#name-input').focus(); return; }
+    $('.empty-row').remove();
+    var $item = buildItem(name);
+    $('#member-list').append($item);
+    renumber();
+    $('#name-input').val('').focus();
+
+    // Filter lại nếu đang tìm kiếm
+    var keyword = $('#search-input').val().toLowerCase().trim();
+    if (keyword) applySearch(keyword);
+  }
+
+  function applySearch(keyword) {
+    var found = 0;
+    $('#member-list li:not(.empty-row):not(.no-result-row)').each(function() {
+      var name = $(this).find('.member-name, .member-edit-input').text().toLowerCase() +
+                 $(this).find('.member-edit-input').val().toLowerCase();
+      if (name.indexOf(keyword) !== -1) { $(this).show(); found++; }
+      else $(this).hide();
+    });
+    $('.no-result-row').remove();
+    if (found === 0 && keyword && $('#member-list li:not(.empty-row)').length > 0) {
+      $('#member-list').append('<li class="no-result-row"><div class="no-result">Không tìm thấy "' + escHtml(keyword) + '"</div></li>');
+    }
+  }
+
+  /* ---- EVENTS ---- */
+  $('#btn-add').on('click', addMember);
+  $('#name-input').on('keypress', function(e) { if (e.key === 'Enter') addMember(); });
+
+  // Xóa
+  $('#member-list').on('click', '.del', function() {
+    var $li = $(this).closest('li');
+    $li.css({ transition: 'all 0.2s', opacity: 0, transform: 'translateX(20px)' });
+    setTimeout(function() { $li.remove(); renumber(); }, 200);
+  });
+
+  // Sửa: chuyển sang chế độ edit
+  $('#member-list').on('click', '.edit', function() {
+    var $li   = $(this).closest('li');
+    var name  = $li.find('.member-name').text();
+    $li.find('.member-name').replaceWith(
+      '<input class="member-edit-input" value="' + escHtml(name) + '" />'
+    );
+    $(this)
+      .removeClass('edit').addClass('save')
+      .attr('title', 'Lưu').text('💾');
+    $li.find('.member-edit-input').focus().select();
+  });
+
+  // Lưu
+  $('#member-list').on('click', '.save', function() {
+    var $li   = $(this).closest('li');
+    var $inp  = $li.find('.member-edit-input');
+    var name  = $inp.val().trim() || $inp.val();
+    $inp.replaceWith('<span class="member-name">' + escHtml(name) + '</span>');
+    // Cập nhật avatar initials
+    $li.find('.avatar').text(initials(name));
+    $(this).removeClass('save').addClass('edit').attr('title', 'Sửa').text('✏️');
+  });
+
+  // Enter trong ô edit
+  $('#member-list').on('keypress', '.member-edit-input', function(e) {
+    if (e.key === 'Enter') $(this).closest('li').find('.save').click();
+  });
+
+  // Tìm kiếm
+  $('#search-input').on('input', function() {
+    var kw = $(this).val().toLowerCase().trim();
+    $('.no-result-row').remove();
+    if (!kw) {
+      $('#member-list li').show();
+      return;
+    }
+    applySearch(kw);
+  });
+
+  /* ---- DỮ LIỆU MẪU ---- */
+  var samples = ['Nguyễn Văn An', 'Trần Thị Bình', 'Lê Minh Châu', 'Phạm Đức Dũng'];
+  $.each(samples, function(i, name) {
+    $('.empty-row').remove();
+    var $item = buildItem(name);
+    $('#member-list').append($item);
+  });
+  renumber();
+});
+</script>
+</body>
+</html>
