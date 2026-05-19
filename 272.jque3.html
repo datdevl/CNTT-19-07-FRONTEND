@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counter Full Pro (Có số âm)</title>
+
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <style>
+        body{
+            font-family: Arial;
+            background: linear-gradient(135deg,#e0f2fe,#f8fafc);
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+
+        .app{
+            background:white;
+            padding:30px;
+            border-radius:15px;
+            width:380px;
+            text-align:center;
+            box-shadow:0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .title{
+            font-size:20px;
+            margin-bottom:15px;
+            color:#2563eb;
+        }
+
+        .counter{
+            font-size:80px;
+            font-weight:bold;
+            margin:20px 0;
+            transition:0.2s;
+        }
+
+        .negative{
+            color:red;
+        }
+
+        .positive{
+            color:green;
+        }
+
+        .btns{
+            display:flex;
+            justify-content:center;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+
+        button{
+            padding:10px 15px;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            font-weight:bold;
+            color:white;
+        }
+
+        .plus{ background:#22c55e; }
+        .minus{ background:#ef4444; }
+        .reset{ background:#6b7280; }
+
+        button:hover{
+            transform:scale(1.05);
+        }
+
+        .history{
+            margin-top:20px;
+            text-align:left;
+            max-height:120px;
+            overflow:auto;
+            font-size:13px;
+            background:#f1f5f9;
+            padding:10px;
+            border-radius:8px;
+        }
+
+        .item{
+            padding:3px 0;
+            border-bottom:1px solid #e2e8f0;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="title">COUNTER FULL PRO</div>
+
+    <div id="counter" class="counter">0</div>
+
+    <div class="btns">
+
+        <button class="minus">- Giảm</button>
+
+        <button class="reset">Reset</button>
+
+        <button class="plus">+ Tăng</button>
+
+    </div>
+
+    <div class="history">
+        <b>Lịch sử:</b>
+        <div id="historyList"></div>
+    </div>
+
+</div>
+
+<script>
+
+$(document).ready(function(){
+
+    const STORAGE_KEY = "counter_full";
+
+    let count = 0;
+
+    const ui = {
+        counter: $("#counter"),
+        plus: $(".plus"),
+        minus: $(".minus"),
+        reset: $(".reset"),
+        history: $("#historyList")
+    };
+
+    // LOAD
+    function load(){
+
+        const saved = localStorage.getItem(STORAGE_KEY);
+
+        if(saved !== null){
+
+            count = parseInt(saved);
+
+        }
+
+    }
+
+    // SAVE
+    function save(){localStorage.setItem(STORAGE_KEY, count);
+
+    }
+
+    // RENDER
+    function render(){
+
+        ui.counter.text(count);
+
+        save();
+
+        // màu sắc số
+        ui.counter.removeClass("negative positive");
+
+        if(count < 0){
+            ui.counter.addClass("negative");
+        }else{
+            ui.counter.addClass("positive");
+        }
+
+    }
+
+    // HISTORY
+    function log(text){
+
+        const time = new Date().toLocaleTimeString();
+
+        ui.history.prepend(`
+            <div class="item">
+                ${text} (${time})
+            </div>
+        `);
+
+    }
+
+    // INCREASE
+    function increase(){
+
+        count++;
+
+        log("Tăng → " + count);
+
+        render();
+
+    }
+
+    // DECREASE (CHO SỐ ÂM)
+    function decrease(){
+
+        count--;
+
+        log("Giảm → " + count);
+
+        render();
+
+    }
+
+    // RESET
+    function reset(){
+
+        count = 0;
+
+        log("Reset");
+
+        render();
+
+    }
+
+    // EVENTS
+    ui.plus.click(increase);
+
+    ui.minus.click(decrease);
+
+    ui.reset.click(reset);
+
+    // KEYBOARD
+    $(document).keydown(function(e){
+
+        if(e.key === "+") increase();
+
+        if(e.key === "-") decrease();
+
+        if(e.key === "0") reset();
+
+    });
+
+    // INIT
+    load();
+
+    render();
+
+});
+
+</script>
+
+</body>
+</html>

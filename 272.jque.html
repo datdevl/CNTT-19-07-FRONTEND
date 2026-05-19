@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng PRO MAX</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f3f4f6;
+            padding: 30px;
+        }
+
+        .cart-container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .qty-controls {
+            display: flex;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            cursor: pointer;
+            background: #eee;
+        }
+
+        .btn:hover {
+            background: #ddd;
+        }
+
+        .qty-input {
+            width: 40px;
+            text-align: center;
+            border: none;
+        }
+
+        .item-total {
+            font-weight: bold;
+            color: #2563eb;
+            min-width: 120px;
+            text-align: right;
+        }
+
+        .btn-delete {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .summary {
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: gray;
+            display: none;
+        }
+
+        .add-box {
+            margin: 15px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .add-box input {
+            padding: 8px;
+        }
+
+        #addProduct {
+            padding: 8px 12px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="cart-container">
+
+    <h2>🛒 Giỏ hàng PRO MAX</h2>
+
+    <!-- THÊM SẢN PHẨM -->
+    <div class="add-box">
+
+        <input type="text" id="productName" placeholder="Tên sản phẩm">
+
+        <input type="number" id="productPrice" placeholder="Giá">
+
+        <button id="addProduct">+ Thêm sản phẩm</button>
+
+    </div>
+
+    <div id="cart">
+
+        <div class="cart-item" data-id="1" data-price="20000000">
+
+            <div>
+                iPhone 15 Pro Max
+            </div>
+
+            <div class="qty-controls">
+                <button class="btn minus">-</button>
+                <input type="number" class="qty-input" value="1" min="1" max="99">
+                <button class="btn plus">+</button>
+            </div>
+
+            <div class="item-total">0 đ</div>
+
+            <button class="btn-delete">Xóa</button>
+
+        </div>
+
+        <div class="cart-item" data-id="2" data-price="5500000">
+
+            <div>
+                AirPods Pro
+            </div>
+
+            <div class="qty-controls">
+                <button class="btn minus">-</button>
+                <input type="number" class="qty-input" value="2" min="1" max="99">
+                <button class="btn plus">+</button>
+            </div>
+
+            <div class="item-total">0 đ</div>
+
+            <button class="btn-delete">Xóa</button>
+
+        </div>
+
+    </div>
+
+    <div class="empty">Giỏ hàng trống 🛒</div>
+
+    <div class="summary">
+        Tổng: <span id="total">0 đ</span>
+    </div>
+
+</div>
+
+<script>
+
+$(document).ready(function(){
+
+    const KEY = "cart_pro";
+    let nextId = 100;
+
+    function format(n){
+        return new Intl.NumberFormat('vi-VN').format(n) + " đ";
+    }
+
+    function save(){
+
+        let data = [];
+
+        $(".cart-item").each(function(){
+
+            data.push({
+                id: $(this).data("id"),
+                price: $(this).data("price"),
+                qty: parseInt($(this).find(".qty-input").val()),
+                name: $(this).find("div:first").text().trim()
+            });
+
+        });
+
+        localStorage.setItem(KEY, JSON.stringify(data));
+
+    }
+
+    function calcItem($item){
+
+        let price = $item.data("price");
+        let qty = parseInt($item.find(".qty-input").val());
+        let total = price * qty;
+
+        $item.find(".item-total").text(format(total));
+
+    }
+
+    function calcAll(){
+
+        let total = 0;
+
+        $(".cart-item").each(function(){
+
+            let price = $(this).data("price");
+            let qty = parseInt($(this).find(".qty-input").val());
+
+            total += price * qty;
+
+        });
+
+        $("#total").text(format(total));
+
+        $(".empty").toggle($(".cart-item").length === 0);
+
+    }
+
+    function update(){
+
+        $(".cart-item").each(function(){
+            calcItem($(this));
+        });
+
+        calcAll();
+
+        save();
+
+    }
+
+    // TĂNG
+    $(document).on("click", ".plus", function(){
+
+        let input = $(this).siblings(".qty-input");
+
+        let val = parseInt(input.val());
+
+        if(val < 99){
+
+            input.val(val + 1);
+
+        }
+
+        update();
+
+    });
+
+    // GIẢM
+    $(document).on("click", ".minus", function(){
+
+        let input = $(this).siblings(".qty-input");
+
+        let val = parseInt(input.val());
+
+        if(val > 1){
+
+            input.val(val - 1);
+
+        }
+
+        update();
+
+    });
+
+    // INPUT
+    $(document).on("input", ".qty-input", function(){
+
+        let val = parseInt($(this).val());
+
+        if(val < 1 || isNaN(val)) $(this).val(1);
+
+        if(val > 99) $(this).val(99);
+
+        update();
+        });
+
+    // XÓA
+    $(document).on("click", ".btn-delete", function(){
+
+        $(this).closest(".cart-item").fadeOut(200, function(){
+
+            $(this).remove();
+
+            update();
+
+        });
+
+    });
+
+    // ➕ THÊM SẢN PHẨM
+    $("#addProduct").on("click", function(){
+
+        let name = $("#productName").val().trim();
+        let price = parseInt($("#productPrice").val());
+
+        if(name === "" || isNaN(price) || price <= 0){
+            alert("Nhập đúng tên và giá!");
+            return;
+        }
+
+        let html = `
+        <div class="cart-item" data-id="${nextId}" data-price="${price}">
+
+            <div>${name}</div>
+
+            <div class="qty-controls">
+                <button class="btn minus">-</button>
+                <input type="number" class="qty-input" value="1" min="1" max="99">
+                <button class="btn plus">+</button>
+            </div>
+
+            <div class="item-total">0 đ</div>
+
+            <button class="btn-delete">Xóa</button>
+
+        </div>`;
+
+        $("#cart").append(html);
+
+        nextId++;
+
+        $("#productName").val("");
+        $("#productPrice").val("");
+
+        update();
+
+    });
+
+    update();
+
+});
+
+</script>
+
+</body>
+
+</html>
