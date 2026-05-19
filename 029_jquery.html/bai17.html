@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 17 - Giỏ hàng dạng bảng</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>Giỏ hàng của bạn</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Đơn giá</th>
+                <th>Số lượng</th>
+                <th>Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody id="DanhSachSanPham">
+            <tr class="SanPham" data-price="150000"> 
+                <td><strong>Áo thun nam</strong></td>
+                <td>150,000 VNĐ</td>
+                <td>
+                    <button class="NutTru btn-quantity">-</button>
+                    <span class="SoLuongHienThi">0</span>
+                    <button class="NutCong btn-quantity">+</button>
+                </td>
+                <td><span class="TongTien">0</span> VNĐ</td>
+            </tr>
+            <tr class="SanPham" data-price="250000"> 
+                <td><strong>Quần Jean Baggy</strong></td>
+                <td>250.000 VNĐ</td>
+                <td>
+                    <button class="NutTru btn-quantity">-</button>
+                    <span class="SoLuongHienThi">0</span>
+                    <button class="NutCong btn-quantity">+</button>
+                </td>
+                <td><span class="TongTien">0</span> VNĐ</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="cart-summary">
+        Tổng hóa đơn: <span id="TongHoaDon">0</span> VNĐ
+    </div>
+    <script>
+        $(document).ready(function() {
+            function updateCart() {
+                let grandTotal = 0;
+                $('.SanPham').each(function() {
+                    let $product = $(this);
+                    let price = parseInt($product.data('price')); 
+                    let quantity = parseInt($product.find('.SoLuongHienThi').text()); 
+                    let total = price * quantity;
+                    $product.find('.TongTien').text(total.toLocaleString()); 
+                    grandTotal += total;
+                });
+                $('#TongHoaDon').text(grandTotal.toLocaleString());
+            }
+            $('.NutCong').click(function() {
+                let $qtyLabel = $(this).closest('.SanPham').find('.SoLuongHienThi');
+                let currentQty = parseInt($qtyLabel.text());
+                
+                $qtyLabel.text(currentQty + 1); 
+                updateCart(); 
+            });
+            $('.NutTru').click(function() {
+                let $qtyLabel = $(this).closest('.SanPham').find('.SoLuongHienThi');
+                let currentQty = parseInt($qtyLabel.text());
+                if (currentQty > 0) { 
+                    $qtyLabel.text(currentQty - 1); 
+                    updateCart(); 
+                } else {
+                    alert("Số lượng sản phẩm phải lớn hơn hoặc bằng 0!");
+                }
+            });
+            
+        });
+    </script>
+</body>
+</html>
