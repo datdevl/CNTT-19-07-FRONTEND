@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuyển Sinh 2026 - Khoa CNTT Đại học Đại Nam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-main: #0a1128;
+            --bg-card: #111a36;
+            --bg-card-hover: #162246;
+            --primary-red: #e63946;
+            --primary-orange: #f77f00;
+            --text-light: #f8f9fa;
+            --text-muted: #94a3b8;
+            --cyan: #00f5d4;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        /* --- HEADER --- */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, var(--primary-red), var(--primary-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        header h2 {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* --- GRID CHUYÊN NGÀNH --- */
+        .grid-majors {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px 24px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(247, 127, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary-orange);
+            background: rgba(247, 127, 0, 0.1);
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        /* Bố cục Ngành 1 có chứa hình ảnh */
+        .cntt-layout {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .image-box {
+            flex: 1;
+            width: 100%;
+            height: 160px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Giúp ảnh tự động vừa khít khung, không bị méo */
+            display: block;
+        }
+
+        .list-branches {
+            flex: 1.2;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .list-branches li {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 3px solid var(--cyan);
+        }
+
+        /* Bố cục ngành 2 & 3 (Cột phải) */
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .flex-branches {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .tag-branch {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 10px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .tag-branch:hover {
+            background: rgba(0, 245, 212, 0.1);
+            color: var(--cyan);
+            border-color: var(--cyan);
+        }
+
+        /* --- BA Ô TIỆN ÍCH (FEATURES) --- */
+        .grid-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .feat-card {
+            background: linear-gradient(135deg, #111a36, #0e162e);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .feat-card .icon-wrapper {
+            background: rgba(255, 255, 255, 0.04);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .feat-card:nth-child(1) .icon-wrapper i { color: #ffb703; }
+        .feat-card:nth-child(2) .icon-wrapper i { color: #fb8500; }
+        .feat-card:nth-child(3) .icon-wrapper i { color: #219ebc; }
+
+        .feat-card h4 {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+
+        /* --- FOOTER ĐẠI NAM --- */
+        footer {
+            background-color: #060b1a;
+            border-radius: 16px;
+            padding: 24px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .footer-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+        }
+
+        .logo-text .web-link {
+            font-size: 12px;
+            color: #3a86ff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .logo-text h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary-red);
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+            line-height: 1.2;
+        }
+
+        .logo-text p {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .info-area {
+            font-size: 13px;
+            color: var(--text-muted);
+            max-width: 380px;
+            line-height: 1.6;
+        }
+
+        .info-area i {
+            color: var(--primary-red);
+            margin-right: 6px;
+        }
+
+        .hotline-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .hotline-btn:hover {
+            border-color: var(--primary-red);
+            color: var(--primary-red);
+        }
+
+        .slogan {
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        /* --- RESPONSIVE MOBILE --- */
+        @media (max-width: 868px) {
+            .grid-majors {
+                grid-template-columns: 1fr;
+            }
+            .cntt-layout {
+                flex-direction: column;
+            }
+            .image-box {
+                height: 200px;
+            }
+            .grid-features {
+                grid-template-columns: 1fr;
+            }
+            .footer-main {
+                flex-direction: column;
+                text-align: center;
+            }
+            .logo-area {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <header>
+            <h1>Đào Tạo Chuyên Ngành 2026</h1>
+            <h2>Khoa Công Nghệ Thông Tin — Đại Học Đại Nam</h2>
+        </header>
+
+        <div class="grid-majors">
+            
+            <div class="card">
+                <div class="card-title">
+                    <i class="fa-solid fa-laptop-code"></i>
+                    <span>1. Công Nghệ Thông Tin</span>
+                </div>
+                <div class="cntt-layout">
+                    <div class="image-box">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnVtF8EtjFErDW47Tyx9wv7FHuMP-gK0WZFQ&s" alt="Sinh viên CNTT Đại học Đại Nam thực hành">
+                    </div>
+                    <ul class="list-branches">
+                        <li><i class="fa-solid fa-microchip" style="color: #64dfdf;"></i> Hệ thống nhúng</li>
+                        <li><i class="fa-solid fa-code" style="color: #48cae4;"></i> Phát triển phần mềm</li>
+                        <li><i class="fa-solid fa-robot" style="color: #00b4d8;"></i> Robot & Trí tuệ nhân tạo</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fa-solid fa-network-wired"></i>
+                        <span>2. Hệ Thống Thông Tin</span>
+                    </div>
+                    <div class="flex-branches">
+                        <div class="tag-branch"><i class="fa-solid fa-cloud"></i> Điện toán đám mây</div>
+                        <div class="tag-branch"><i class="fa-solid fa-database"></i> Cơ sở dữ liệu</div>
+                        <div class="tag-branch"><i class="fa-solid fa-mobile-button"></i> Ứng dụng di động</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fa-solid fa-brain"></i>
+                        <span>3. Khoa Học Máy Tính</span>
+                    </div>
+                    <div class="flex-branches">
+                        <div class="tag-branch"><i class="fa-solid fa-chart-line"></i> Khoa học dữ liệu</div>
+                        <div class="tag-branch"><i class="fa-solid fa-user-astronaut"></i> Trí tuệ nhân tạo (AI)</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="grid-features">
+            <div class="feat-card">
+                <div class="icon-wrapper"><i class="fa-solid fa-graduation-cap"></i></div>
+                <h4>Chương trình<br>đào tạo thực tiễn</h4>
+            </div>
+            <div class="feat-card">
+                <div class="icon-wrapper"><i class="fa-solid fa-briefcase"></i></div>
+                <h4>Cơ hội<br>thực tập mở rộng</h4>
+            </div>
+            <div class="feat-card">
+                <div class="icon-wrapper"><i class="fa-solid fa-cubes"></i></div>
+                <h4>Hệ sinh thái<br>công nghệ số</h4>
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-main">
+                <div class="logo-area">
+                    <img class="logo-img" src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Logo_DAI_NAM.png" alt="Đại học Đại Nam">
+                    <div class="logo-text">
+                        <a href="https://dainam.edu.vn" target="_blank" class="web-link">www.dainam.edu.vn</a>
+                        <h3>ĐẠI NAM</h3>
+                        <p>UNIVERSITY</p>
+                    </div>
+                </div>
+
+                <div class="info-area">
+                    <p><i class="fa-solid fa-location-dot"></i> Văn phòng Khoa CNTT, Phòng 305, Tòa nhà Central Building, Trường Đại học Đại Nam.</p>
+                </div>
+
+                <button class="hotline-btn">
+                    <i class="fa-solid fa-phone"></i>
+                    <span>Hotline: 0981 595 599</span>
+                </button>
+            </div>
+            
+            <div class="slogan">Khơi dậy tiềm năng — Vươn tới thành công</div>
+        </footer>
+
+    </div>
+
+</body>
+</html>
