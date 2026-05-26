@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Khoa Công Nghệ Thông Tin - Trường Đại Học Đại Nam</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      :root {
+        --primary-bg: #0b1a3a;
+        --card-bg: #142850;
+        --accent-red: #da251d;
+        --accent-orange: #f37021;
+        --text-light: #ffffff;
+        --text-gray: #b2bec3;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Roboto", sans-serif;
+      }
+
+      body {
+        background-color: var(--primary-bg);
+        color: var(--text-light);
+        line-height: 1.6;
+      }
+
+      /* Top Banner Section */
+      .hero-banner {
+        width: 100%;
+        position: relative;
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-bottom: 4px solid var(--accent-orange);
+      }
+
+      .hero-banner img {
+        width: 100%;
+        max-width: 1200px;
+        height: auto;
+        display: block;
+      }
+
+      /* Main Content Container */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      /* Header Title */
+      .main-header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .main-header h1 {
+        color: #ffcc00;
+        font-size: 2.2rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      }
+
+      .main-header p {
+        font-size: 1.3rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        color: var(--text-light);
+      }
+
+      /* Grid Layout for Majors */
+      .majors-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 25px;
+        margin-bottom: 30px;
+      }
+
+      @media (max-width: 992px) {
+        .majors-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Card Styles */
+      .card {
+        background-color: var(--card-bg);
+        border-radius: 8px;
+        padding: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+      }
+
+      .card-title-tag {
+        background-color: var(--accent-red);
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 0.95rem;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      .card-title-tag i {
+        margin-right: 8px;
+      }
+
+      /* Left Big Card Layout */
+      .cntt-content {
+        display: flex;
+        gap: 20px;
+      }
+
+      @media (max-width: 576px) {
+        .cntt-content {
+          flex-direction: column;
+        }
+      }
+
+      .image-placeholder {
+        flex: 1;
+        background-color: #57606f;
+        border-radius: 6px;
+        min-height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: #dcdde1;
+        border: 2px dashed #718093;
+      }
+
+      .sub-list {
+        flex: 1.2;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 18px;
+      }
+
+      .sub-list li {
+        display: flex;
+        align-items: center;
+        font-size: 1.05rem;
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+
+      .sub-list li:hover {
+        color: #ffcc00;
+      }
+
+      .sub-list li i {
+        margin-right: 12px;
+        width: 25px;
+        text-align: center;
+        font-size: 1.2rem;
+      }
+
+      .icon-blue {
+        color: #00a8ff;
+      }
+      .icon-green {
+        color: #2ed573;
+      }
+      .icon-pink {
+        color: #ff4757;
+      }
+
+      /* Right Side Stacked Cards */
+      .right-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+      }
+
+      .right-sub-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+        text-align: center;
+        margin-top: 5px;
+      }
+
+      .sub-item-box {
+        padding: 15px 10px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .sub-item-box:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffcc00;
+      }
+
+      .sub-item-box i {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      .sub-item-box span {
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      /* Core Features Row */
+      .features-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-top: 10px;
+        margin-bottom: 40px;
+      }
+
+      @media (max-width: 768px) {
+        .features-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .feature-btn {
+        background: linear-gradient(145deg, #102244, #1a3365);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 6px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        color: white;
+      }
+
+      .feature-btn:hover {
+        background: #ffcc00;
+        color: var(--primary-bg);
+        font-weight: bold;
+        transform: translateY(-2px);
+      }
+
+      .feature-btn i {
+        font-size: 1.5rem;
+      }
+
+      .feature-btn.active-btn {
+        border-bottom: 3px solid #ffcc00;
+      }
+
+      .feature-text h4 {
+        font-size: 0.95rem;
+        text-transform: uppercase;
+      }
+
+      /* Interactive Info Panel Box */
+      .info-panel {
+        background: rgba(255, 255, 255, 0.05);
+        border-left: 4px solid #ffcc00;
+        padding: 20px;
+        border-radius: 0 8px 8px 0;
+        margin-bottom: 40px;
+        display: none; /* Khởi đầu ẩn, xuất hiện khi click */
+      }
+
+      /* Diagram Block Section */
+      .diagram-section {
+        background: var(--card-bg);
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        margin-bottom: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .diagram-section h3 {
+        margin-bottom: 15px;
+        color: #ffcc00;
+      }
+
+      .diagram-container img {
+        width: 100%;
+        max-width: 900px;
+        height: auto;
+        border-radius: 6px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      }
+
+      /* Footer Info Bar */
+      .footer-bar {
+        background-color: #050d1e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        padding: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .footer-left .brand {
+        font-weight: 800;
+        font-size: 1.2rem;
+        color: var(--accent-red);
+      }
+
+      .footer-left .sub-brand {
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        color: var(--text-gray);
+      }
+
+      .footer-center {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.9rem;
+        color: var(--text-gray);
+      }
+
+      .footer-center i {
+        color: var(--accent-red);
+        font-size: 1.2rem;
+      }
+
+      .footer-right .hotline-btn {
+        background: transparent;
+        border: 1px solid white;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+      }
+
+      .footer-right .hotline-btn:hover {
+        background-color: var(--accent-red);
+        border-color: var(--accent-red);
+      }
+
+      /* Motto Slogan */
+      .slogan {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 0.95rem;
+        letter-spacing: 2px;
+        color: #4a75a0;
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+
+      /* Back to top button */
+      .back-to-top {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--accent-orange);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        opacity: 0;
+        transition: opacity 0.3s;
+        z-index: 999;
+      }
+
+      .back-to-top.show {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="hero-banner">
+      <img
+        src="banner-khoa.jpg"
+        alt="Khoa Công Nghệ Thông Tin - Đại Học Đại Nam"
+      />
+    </header>
+
+    <main class="container">
+      <div class="main-header">
+        <h1>Đào Tạo Các Chuyên Ngành 2026</h1>
+        <p>KHOA CÔNG NGHỆ THÔNG TIN - TRƯỜNG ĐẠI HỌC ĐẠI NAM</p>
+      </div>
+
+      <section class="majors-grid">
+        <div class="card">
+          <div class="card-title-tag">
+            <i class="fa-solid fa-desktop"></i> 1. CÔNG NGHỆ THÔNG TIN
+          </div>
+          <div class="cntt-content">
+            <div class="image-placeholder">
+              <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTWtl5mmjF8n0gEzmZYP-CaApoVM4LPsUKaw&s"
+              />
+            </div>
+            <ul class="sub-list">
+              <li
+                onclick="
+                  showDetails(
+                    'Hệ thống nhúng',
+                    'Nghiên cứu tích hợp phần cứng và phần mềm điều khiển tự động hóa.',
+                  )
+                "
+              >
+                <i class="fa-solid fa-gear icon-blue"></i> Hệ thống nhúng
+              </li>
+              <li
+                onclick="
+                  showDetails(
+                    'Phát triển phần mềm',
+                    'Học lập trình web, app, và quy trình xây dựng hệ thống phần mềm lớn.',
+                  )
+                "
+              >
+                <i class="fa-solid fa-laptop-code icon-green"></i> Phát triển
+                phần mềm
+              </li>
+              <li
+                onclick="
+                  showDetails(
+                    'Robot và Trí tuệ nhân tạo',
+                    'Thiết kế hệ thống tự hành và thuật toán thông minh tương tác thực tế.',
+                  )
+                "
+              >
+                <i class="fa-solid fa-robot icon-pink"></i> Robot và trí tuệ
+                nhân tạo
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="right-stack">
+          <div class="card">
+            <div class="card-title-tag">
+              <i class="fa-solid fa-cloud"></i> 2. HỆ THỐNG THÔNG TIN
+            </div>
+            <div class="right-sub-grid">
+              <div
+                class="sub-item-box"
+                onclick="
+                  showDetails(
+                    'Điện toán đám mây',
+                    'Quản trị cơ sở dữ liệu trên đám mây AWS, Azure, Google Cloud.',
+                  )
+                "
+              >
+                <i class="fa-solid fa-cloud-bolt icon-blue"></i>
+                <span>Điện toán đám mây</span>
+              </div>
+              <div
+                class="sub-item-box"
+                onclick="
+                  showDetails(
+                    'An toàn thông tin',
+                    'Bảo mật hệ thống mạng, phòng chống tấn công mạng độc hại.',
+                  )
+                "
+              >
+                <i class="fa-solid fa-shield-halved icon-green"></i>
+                <span>An toàn thông tin</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title-tag">
+              <i class="fa-solid fa-graduation-cap"></i> 3. KHOA HỌC MÁY TÍNH
+            </div>
+            <div class="right-sub-grid">
+              <div
+                class="sub-item-box"
+                onclick="
+                  showDetails(
+                    'Khoa học dữ liệu',
+                    'Phân tích dữ liệu lớn (Big Data), thống kê và dự báo xu hướng tương lai.',
+                  )
+                "
+              >
+                <i class="fa-solid fa-chart-bar icon-blue"></i>
+                <span>Khoa học dữ liệu</span>
+              </div>
+              <div
+                class="sub-item-box"
+                onclick="
+                  showDetails(
+                    'Trí tuệ nhân tạo (AI)',
+                    'Phát triển học máy (Machine Learning), xử lý ngôn ngữ và thị giác máy tính.',
+                  )
+                "
+              >
+                <i class="fa-solid fa-robot icon-pink"></i>
+                <span>Trí tuệ nhân tạo (AI)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="features-row">
+        <div class="feature-btn" onclick="toggleTab('daotao', this)">
+          <i class="fa-solid fa-book-open" style="color: #ffcc00"></i>
+          <div class="feature-text">
+            <h4>Chương trình</h4>
+            <p style="font-size: 0.8rem; opacity: 0.8">Đào tạo thực tiễn</p>
+          </div>
+        </div>
+        <div class="feature-btn" onclick="toggleTab('thuctap', this)">
+          <i class="fa-solid fa-heart" style="color: #ff4757"></i>
+          <div class="feature-text">
+            <h4>Cơ hội</h4>
+            <p style="font-size: 0.8rem; opacity: 0.8">Thực tập từ năm 2</p>
+          </div>
+        </div>
+        <div class="feature-btn" onclick="toggleTab('hesinhthai', this)">
+          <i class="fa-solid fa-globe" style="color: #2ed573"></i>
+          <div class="feature-text">
+            <h4>Hệ sinh thái</h4>
+            <p style="font-size: 0.8rem; opacity: 0.8">Công nghệ hiện đại</p>
+          </div>
+        </div>
+      </section>
+
+      <div id="dynamic-info" class="info-panel">
+        <h3 id="info-title" style="color: #ffcc00; margin-bottom: 8px">
+          Tiêu đề
+        </h3>
+        <p id="info-desc">Nội dung chi tiết hiển thị ở đây...</p>
+      </div>
+
+      <section class="diagram-section">
+        <h3>Sơ đồ gốc tổng quan</h3>
+        <div class="diagram-container">
+          <img
+            src="chuyen-nganh.png"
+            alt="Sơ đồ tổng quan chuyên ngành Đại Học Đại Nam"
+          />
+        </div>
+      </section>
+
+      <footer class="footer-bar">
+        <div class="footer-left">
+          <div class="brand">ĐẠI NAM</div>
+          <div class="sub-brand">UNIVERSITY</div>
+        </div>
+
+        <div class="footer-center">
+          <i class="fa-solid fa-location-dot"></i>
+          <div>
+            Văn phòng Khoa CNTT, Phòng 305, Tòa nhà Central Building,<br />Trường
+            Đại học Đại Nam
+          </div>
+        </div>
+
+        <div class="footer-right">
+          <a href="tel:0981595599" class="hotline-btn">
+            <i class="fa-solid fa-phone"></i> Hotline: 0981 595 599
+          </a>
+        </div>
+      </footer>
+
+      <div class="slogan">KHƠI DẬY TIỀM NĂNG - VƯƠN TỚI THÀNH CÔNG</div>
+    </main>
+
+    <a href="#" class="back-to-top" id="scrollTop"
+      ><i class="fa-solid fa-arrow-up"></i
+    ></a>
+
+    <script>
+      // Chức năng 1: Hiển thị thông tin nhanh khi click vào chuyên ngành nhỏ
+      function showDetails(title, description) {
+        const panel = document.getElementById("dynamic-info");
+        document.getElementById("info-title").innerText = title;
+        document.getElementById("info-desc").innerText = description;
+
+        panel.style.display = "block";
+        panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      // Chức năng 2: Chuyển đổi tab thông tin cho 3 nút cốt lõi
+      function toggleTab(type, element) {
+        // Xóa class active ở các nút khác
+        document
+          .querySelectorAll(".feature-btn")
+          .forEach((btn) => btn.classList.remove("active-btn"));
+        element.classList.add("active-btn");
+
+        let title = "";
+        let desc = "";
+
+        if (type === "daotao") {
+          title = "CHƯƠNG TRÌNH ĐÀO TẠO THỰC TIỄN";
+          desc =
+            "Giảm thiểu lý thuyết hàn lâm, tăng cường thời gian thực hành tại phòng Lab và doanh nghiệp liên kết. Sinh viên vững tay nghề ngay khi ngồi trên ghế nhà trường.";
+        } else if (type === "thuctap") {
+          title = "CƠ HỘI THỰC TẬP PHONG PHÚ";
+          desc =
+            "Mạng lưới hơn 100+ doanh nghiệp công nghệ đối tác sẵn sàng tiếp nhận sinh viên thực tập từ năm thứ 2, cơ hội làm việc chính thức ngay sau khi tốt nghiệp.";
+        } else if (type === "hesinhthai") {
+          title = "HỆ SINH THÁI CÔNG NGHỆ CAO";
+          desc =
+            "Cung cấp hạ tầng phòng máy cấu hình mạnh, các thiết bị IoT, Robot mô phỏng tối tân giúp sinh viên bắt kịp mọi xu hướng công nghệ trên thế giới.";
+        }
+
+        showDetails(title, desc);
+      }
+
+      // Chức năng 3: Xuất hiện nút cuộn lên đầu trang
+      const scrollTopBtn = document.getElementById("scrollTop");
+      window.onscroll = function () {
+        if (
+          document.body.scrollTop > 300 ||
+          document.documentElement.scrollTop > 300
+        ) {
+          scrollTopBtn.classList.add("show");
+        } else {
+          scrollTopBtn.classList.remove("show");
+        }
+      };
+    </script>
+  </body>
+</html>
