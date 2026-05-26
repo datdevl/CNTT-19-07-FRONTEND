@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Đào Tạo Các Chuyên Ngành 2026</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI, sans-serif;
+}
+
+body{
+    background: linear-gradient(135deg,#0f172a,#1e293b);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:30px;
+    color:white;
+}
+
+/* KHUNG CHÍNH */
+.container{
+    width:100%;
+    max-width:1200px;
+    background:#162031;
+    border-radius:20px;
+    padding:40px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.5);
+    position:relative;
+    overflow:hidden;
+}
+
+/* HIỆU ỨNG */
+.container::before{
+    content:"";
+    position:absolute;
+    width:300px;
+    height:300px;
+    background:rgba(255,255,255,0.05);
+    border-radius:50%;
+    top:-100px;
+    right:-100px;
+}
+
+/* LOGO */
+.logo{
+    position:absolute;
+    top:25px;
+    right:35px;
+}
+
+.logo-link {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-decoration: none;
+}
+
+.logo img {
+    max-width: 140px; /* Điều chỉnh kích thước logo cho vừa vặn */
+    height: auto;
+    display: block;
+}
+
+/* HEADER */
+.header{
+    text-align:center;
+    margin-bottom:45px;
+}
+
+.header h1{
+    font-size:40px;
+    color:#ff6b4a;
+    margin-bottom:10px;
+    text-transform:uppercase;
+}
+
+.header p{
+    color:#cbd5e1;
+    font-size:18px;
+    letter-spacing:1px;
+}
+
+/* GRID */
+.content-grid{
+    display:grid;
+    grid-template-columns:1.3fr 1fr;
+    gap:25px;
+}
+
+@media(max-width:900px){
+    .content-grid{
+        grid-template-columns:1fr;
+    }
+    /* Đưa logo về giữa hoặc ẩn bớt vị trí tuyệt đối khi trên màn hình nhỏ */
+    .logo {
+        position: relative;
+        top: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    .logo-link {
+        align-items: center;
+    }
+}
+
+/* CARD */
+.card{
+    background:#24344f;
+    border-radius:16px;
+    padding:25px;
+    border:1px solid rgba(255,255,255,0.08);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
+
+.card-title{
+    display:inline-block;
+    padding:8px 18px;
+    border-radius:8px;
+    font-weight:bold;
+    margin-bottom:22px;
+    font-size:15px;
+}
+
+/* CNTT */
+.cntt-box{
+    display:flex;
+    gap:25px;
+    align-items:center;
+}
+
+@media(max-width:700px){
+    .cntt-box{
+        flex-direction:column;
+    }
+}
+
+.image-placeholder{
+    flex:1;
+    min-height:260px;
+    border-radius:14px;
+    overflow:hidden;
+}
+
+.image-placeholder img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:14px;
+}
+
+.info-list{
+    flex:1;
+    list-style:none;
+}
+
+.info-list li{
+    margin-bottom:18px;
+    font-size:18px;
+    background:#1b283f;
+    padding:15px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    transition:0.3s;
+}
+
+.info-list li:hover{
+    background:#304564;
+    transform:translateX(5px);
+}
+
+.info-list li::before{
+    content:"✦";
+    color:#00e5ff;
+    font-size:20px;
+}
+
+/* RIGHT */
+.right-column{
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+}
+
+/* GRID ICON */
+.sub-grid-3{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.sub-grid-2{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+@media(max-width:600px){
+    .sub-grid-3,
+    .sub-grid-2{
+        grid-template-columns:1fr;
+    }
+}
+
+.icon-box{
+    background:#1b283f;
+    border-radius:14px;
+    padding:20px 15px;
+    text-align:center;
+    transition:0.3s;
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.icon-box:hover{
+    background:#304564;
+    transform:scale(1.05);
+}
+
+.icon-thumb{
+    width:65px;
+    height:65px;
+    margin:auto;
+    margin-bottom:12px;
+    background:linear-gradient(135deg,#ff6b4a,#ff9800);
+    border-radius:16px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:30px;
+}
+
+.icon-box span{
+    font-size:15px;
+    color:#e2e8f0;
+    font-weight:500;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logo">
+        <a href="#" class="logo-link">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Logo_DAI_NAM.png/1920px-Logo_DAI_NAM.png" alt="Dai Nam University Logo">
+            <span style="display: none;">DAI NAM UNIVERSITY</span>
+        </a>
+    </div>
+
+    <div class="header">
+        <h1>Đào Tạo Các Chuyên Ngành 2026</h1>
+        <p>Khoa Công Nghệ Thông Tin - Trường Đại Học Đại Nam</p>
+    </div>
+
+    <div class="content-grid">
+
+        <section class="card">
+
+            <div class="card-title" style="background:#ff5722;">
+                💻 1. CÔNG NGHỆ THÔNG TIN
+            </div>
+
+            <div class="cntt-box">
+
+                <div class="image-placeholder">
+                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop" alt="Công nghệ thông tin">
+                </div>
+
+                <ul class="info-list">
+                    <li>Hệ thống nhúng</li>
+                    <li>Phát triển phần mềm</li>
+                    <li>Robot và trí tuệ nhân tạo</li>
+                </ul>
+
+            </div>
+
+        </section>
+
+        <div class="right-column">
+
+            <section class="card">
+
+                <div class="card-title" style="background:#e65100;">
+                    ⚙️ 2. HỆ THỐNG THÔNG TIN
+                </div>
+
+                <div class="sub-grid-3">
+
+                    <div class="icon-box">
+                        <div class="icon-thumb">🌐</div>
+                        <span>Mạng máy tính</span>
+                    </div>
+
+                    <div class="icon-box">
+                        <div class="icon-thumb">🔒</div>
+                        <span>An toàn thông tin</span>
+                    </div>
+
+                    <div class="icon-box">
+                        <div class="icon-thumb">📱</div>
+                        <span>Ứng dụng di động</span>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section class="card">
+
+                <div class="card-title" style="background:#d84315;">
+                    📊 3. KHOA HỌC MÁY TÍNH
+                </div>
+
+                <div class="sub-grid-2">
+
+                    <div class="icon-box">
+                        <div class="icon-thumb">📈</div>
+                        <span>Khoa học dữ liệu</span>
+                    </div>
+
+                    <div class="icon-box">
+                        <div class="icon-thumb">🤖</div>
+                        <span>Trí tuệ nhân tạo (AI)</span>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
