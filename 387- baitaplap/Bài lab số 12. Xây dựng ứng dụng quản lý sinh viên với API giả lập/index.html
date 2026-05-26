@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bài 12: Quản lý sinh viên CRUD (Fetch API)</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 30px;
+        background: #f8f9fa;
+        display: flex;
+        gap: 20px;
+      }
+      .form-panel {
+        flex: 1;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        height: fit-content;
+      }
+      .list-panel {
+        flex: 2;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .form-group {
+        margin-bottom: 12px;
+      }
+      label {
+        display: block;
+        margin-bottom: 4px;
+        font-weight: bold;
+      }
+      input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+      }
+      th {
+        background: #28a745;
+        color: white;
+      }
+      button {
+        padding: 8px 12px;
+        cursor: pointer;
+        border: none;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+      .btn-add {
+        background: #28a745;
+        color: white;
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+      }
+      .btn-delete {
+        background: #dc3545;
+        color: white;
+        padding: 4px 8px;
+        font-size: 13px;
+      }
+      .search-filter {
+        margin-bottom: 15px;
+        width: 100%;
+        padding: 8px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-panel">
+      <h3>Thêm Sinh Viên Mới</h3>
+      <form id="studentForm" onsubmit="handleFormSubmit(event)">
+        <div class="form-group">
+          <label for="inputName">Họ và Tên:</label>
+          <input
+            type="text"
+            id="inputName"
+            required
+            placeholder="Nhập tên sinh viên"
+          />
+        </div>
+        <div class="form-group">
+          <label for="inputClass">Lớp học:</label>
+          <input
+            type="text"
+            id="inputClass"
+            required
+            placeholder="Ví dụ: WD18301"
+          />
+        </div>
+        <button type="submit" class="btn-add">Lưu Lại (POST)</button>
+      </form>
+    </div>
+
+    <div class="list-panel">
+      <h3>Danh Sách Sinh Viên Thực Tế Từ Máy Chủ</h3>
+      <input
+        type="text"
+        id="filterInput"
+        class="search-filter"
+        oninput="filterLocalList()"
+        placeholder="🔍 Nhập ký tự tìm kiếm nhanh theo tên tại đây..."
+      />
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Họ & Tên</th>
+            <th>Lớp</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody id="studentTableBody"></tbody>
+      </table>
+    </div>
+
+    <script>
+      const ENDPOINT_API =
+        "https://65fb18da14650eb21009a7bf.mockapi.io/api/v1/students";
+      let localStudentStorage = []; // Lưu trữ mảng dữ liệu đệm tại local phục vụ tính năng tìm kiếm bộ lọc
+
+      async function fetchAllStudents() {
+        try {
+          const res = await fetch(ENDPOINT_API);
+          localStudentStorage = await res.json();
+          renderTable(localStudentStorage);
+        } catch (err) {
+          console.error("Lỗi tải danh sách: ", err);
+        }
+      }
+
+      function renderTable(dataArray) {
+        const tbody = document.getElementById("studentTableBody");
+        tbody.innerHTML = "";
+
+        dataArray.forEach((st) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>#${st.id}</td>
+            <td><strong>${st.name}</strong></td>
+            <td>${st.class}</td>
+            <td><button class="btn-delete" onclick="deleteStudentById('${st.id}')">Xóa (DELETE)</button></td>
+        `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      async function handleFormSubmit(event) {
+        event.preventDefault();
+        const name = document.getElementById("inputName").value.trim();
+        const sClass = document.getElementById("inputClass").value.trim();
+
+        const payload = { name: name, class: sClass };
+
+        try {
+          const res = await fetch(ENDPOINT_API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (res.ok) {
+            document.getElementById("studentForm").reset();
+            await fetchAllStudents(); // Đồng bộ tải nạp làm mới danh sách dữ liệu hiển thị từ máy chủ
+          }
+        } catch (err) {
+          alert("Lỗi thêm mới dữ liệu!");
+        }
+      }
+
+      async function deleteStudentById(id) {
+        if (
+          confirm(
+            `Bạn chắc chắn muốn gửi lệnh DELETE xóa sinh viên mã định danh #${id}?`,
+          )
+        ) {
+          try {
+            const res = await fetch(`${ENDPOINT_API}/${id}`, {
+              method: "DELETE",
+            });
+            if (res.ok) {
+              await fetchAllStudents();
+            }
+          } catch (err) {
+            alert("Lỗi gửi lệnh xóa lên Server!");
+          }
+        }
+      }
+
+      function filterLocalList() {
+        // Mở rộng: Thực hiện lọc mảng dữ liệu không cần tải lại trang
+        const query = document
+          .getElementById("filterInput")
+          .value.toLowerCase()
+          .trim();
+        const filtered = localStudentStorage.filter((item) =>
+          item.name.toLowerCase().includes(query),
+        );
+        renderTable(filtered);
+      }
+
+      // Khởi tạo chạy nạp dữ liệu từ API máy chủ khi trình duyệt hiển thị trang hoàn tất
+      fetchAllStudents();
+    </script>
+  </body>
+</html>

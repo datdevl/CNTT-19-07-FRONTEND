@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bài 4: Xử lý dữ liệu điểm sinh viên</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+        background-color: #fafafa;
+      }
+      .box {
+        max-width: 500px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .score-list {
+        background: #eee;
+        padding: 10px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 16px;
+        margin-bottom: 15px;
+        min-height: 24px;
+      }
+      .input-group {
+        margin-bottom: 15px;
+        display: flex;
+        gap: 10px;
+      }
+      input {
+        flex: 1;
+        padding: 8px;
+      }
+      button {
+        padding: 8px 15px;
+        background: #17a2b8;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #138496;
+      }
+      .result-box {
+        border-top: 2px solid #17a2b8;
+        margin-top: 15px;
+        padding-top: 15px;
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <h2>Quản Lý Điểm Sinh Viên</h2>
+      <p>
+        <em
+          >Hệ thống sẽ tự động loại bỏ 1 điểm thấp nhất trước khi tính trung
+          bình (Yêu cầu mở rộng).</em
+        >
+      </p>
+
+      <div class="score-list" id="displayArray">Mảng điểm hiện tại: []</div>
+
+      <div class="input-group">
+        <input
+          type="number"
+          id="newScore"
+          step="0.1"
+          placeholder="Nhập điểm mới (0 - 10)"
+        />
+        <button onclick="addScore()">Thêm Điểm</button>
+      </div>
+
+      <button
+        onclick="processScores()"
+        style="width: 100%; background: #28a745"
+      >
+        Tính Toán & Phân Loại
+      </button>
+
+      <div class="result-box" id="results" style="display: none">
+        <div>Tổng số điểm đã nhập: <span id="resTotalCount">0</span></div>
+        <div>
+          Điểm bị loại bỏ (Thấp nhất):
+          <span id="resDropped" style="color: red; font-weight: bold"
+            >Không có</span
+          >
+        </div>
+        <div>
+          Điểm trung bình học phần:
+          <span id="resAvg" style="font-weight: bold">0</span>
+        </div>
+        <div>
+          Phân loại học lực:
+          <span id="resRank" style="color: blue; font-weight: bold"
+            >Chưa rõ</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let scores = [8.5, 6.0, 7.2, 4.5, 9.0]; // Khởi tạo mảng ban đầu có 5 phần tử
+
+      function updateDisplay() {
+        document.getElementById("displayArray").innerText =
+          "Mảng điểm hiện tại: [" + scores.join(", ") + "]";
+      }
+
+      function addScore() {
+        const scoreInput = document.getElementById("newScore");
+        const val = parseFloat(scoreInput.value);
+
+        if (isNaN(val) || val < 0 || val > 10) {
+          alert("Vui lòng nhập điểm hợp lệ từ 0 đến 10!");
+          return;
+        }
+
+        scores.push(val);
+        updateDisplay();
+        scoreInput.value = "";
+        scoreInput.focus();
+      }
+
+      function processScores() {
+        if (scores.length === 0) {
+          alert("Mảng điểm rỗng! Vui lòng thêm điểm trước khi tính toán.");
+          return;
+        }
+
+        let workingScores = [...scores];
+        let droppedScore = null;
+
+        // Tính năng mở rộng: Loại bỏ điểm thấp nhất nếu mảng có nhiều hơn 1 phần tử
+        if (workingScores.length > 1) {
+          const minScore = Math.min(...workingScores);
+          droppedScore = minScore;
+          const index = workingScores.indexOf(minScore);
+          if (index > -1) {
+            workingScores.splice(index, 1);
+          }
+        }
+
+        // Tính tổng bằng cấu trúc vòng lặp reduce
+        const sum = workingScores.reduce((acc, curr) => acc + curr, 0);
+        const avg = Number((sum / workingScores.length).toFixed(2));
+
+        // Phân loại học lực theo các mức quy chuẩn
+        let rank = "";
+        if (avg < 5.0) rank = "Yếu";
+        else if (avg >= 5.0 && avg < 6.5) rank = "Trung bình";
+        else if (avg >= 6.5 && avg < 8.0) rank = "Khá";
+        else rank = "Giỏi";
+
+        // Cập nhật thông tin lên DOM giao diện
+        document.getElementById("resTotalCount").innerText = scores.length;
+        document.getElementById("resDropped").innerText =
+          droppedScore !== null ? droppedScore : "Không có (Mảng quá ngắn)";
+        document.getElementById("resAvg").innerText = avg;
+        document.getElementById("resRank").innerText = rank;
+        document.getElementById("results").style.display = "block";
+      }
+
+      // Gọi lần đầu để hiển thị mảng mẫu
+      updateDisplay();
+    </script>
+  </body>
+</html>

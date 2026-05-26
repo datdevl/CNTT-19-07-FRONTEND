@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bài 17: Giỏ hàng đa mặt hàng jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+        background: #fdfdfd;
+      }
+      .cart-table {
+        width: 100%;
+        max-width: 650px;
+        border-collapse: collapse;
+        background: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      th,
+      td {
+        padding: 12px;
+        border: 1px solid #dee2e6;
+        text-align: left;
+      }
+      th {
+        background: #f1f3f5;
+      }
+      .qty-btn {
+        padding: 2px 8px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .qty-val {
+        display: inline-block;
+        width: 30px;
+        text-align: center;
+        font-weight: bold;
+      }
+      .grand-total-box {
+        max-width: 650px;
+        text-align: right;
+        margin-top: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #bc2130;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>🛒 Mô Phỏng Giỏ Hàng Trực Tuyến</h2>
+
+    <table class="cart-table">
+      <thead>
+        <tr>
+          <th>Tên hàng</th>
+          <th>Đơn giá</th>
+          <th>Số lượng</th>
+          <th>Thành tiền</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="cart-item" data-price="250000">
+          <td>Giày vải Thượng Đình</td>
+          <td>250,000đ</td>
+          <td>
+            <button class="qty-btn btn-down">-</button>
+            <span class="qty-val">1</span>
+            <button class="qty-btn btn-up">+</button>
+          </td>
+          <td class="item-subtotal">250,000đ</td>
+        </tr>
+        <tr class="cart-item" data-price="120000">
+          <td>Áo thun trơn Cotton</td>
+          <td>120,000đ</td>
+          <td>
+            <button class="qty-btn btn-down">-</button>
+            <span class="qty-val">2</span>
+            <button class="qty-btn btn-up">+</button>
+          </td>
+          <td class="item-subtotal">240,000đ</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="grand-total-box">
+      Tổng tiền hóa đơn thanh toán: <span id="lblGrandTotal">490,000đ</span>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        // Sử dụng kỹ thuật bắt sự kiện tương tác bằng Click điều hướng dòng
+        $(".btn-up").click(function () {
+          let qtySpan = $(this).siblings(".qty-val");
+          let currentQty = parseInt(qtySpan.text());
+          qtySpan.text(currentQty + 1);
+          calculateRowAndTotal($(this).closest(".cart-item"));
+        });
+
+        $(".btn-down").click(function () {
+          let qtySpan = $(this).siblings(".qty-val");
+          let currentQty = parseInt(qtySpan.text());
+          // Quy ước chuẩn mực nghiệp vụ UX giỏ hàng không cho số lượng tụt nhỏ hơn 1
+          if (currentQty > 1) {
+            qtySpan.text(currentQty - 1);
+            calculateRowAndTotal($(this).closest(".cart-item"));
+          } else {
+            alert("Số lượng mua tối thiểu của mặt hàng trong giỏ phải bằng 1!");
+          }
+        });
+
+        function calculateRowAndTotal(row) {
+          // Trích xuất đơn giá lưu trong thuộc tính Dataset của dòng dữ liệu HTML
+          const unitPrice = parseInt(row.attr("data-price"));
+          const qty = parseInt(row.find(".qty-val").text());
+          const subtotal = unitPrice * qty;
+
+          // Cập nhật thành tiền của riêng dòng sản phẩm hiện tại
+          row
+            .find(".item-subtotal")
+            .text(subtotal.toLocaleString("vi-VN") + "đ");
+
+          // Mở rộng: Duyệt quét toàn bộ cấu trúc bảng để cộng dồn tính toán Tổng hóa đơn gộp đại lý
+          let grandTotal = 0;
+          $(".cart-item").each(function () {
+            const p = parseInt($(this).attr("data-price"));
+            const q = parseInt($(this).find(".qty-val").text());
+            grandTotal += p * q;
+          });
+
+          $("#lblGrandTotal").text(grandTotal.toLocaleString("vi-VN") + "đ");
+        }
+
+        // Chạy quét cấu trúc định hình dữ liệu khởi điểm bắt đầu
+        $(".cart-item").each(function () {
+          calculateRowAndTotal($(this));
+        });
+      });
+    </script>
+  </body>
+</html>

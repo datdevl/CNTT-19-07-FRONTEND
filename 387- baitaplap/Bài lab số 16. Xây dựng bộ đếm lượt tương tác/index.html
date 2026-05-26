@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bài 16: Bộ đếm tương tác jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding-top: 50px;
+        background: #e9ecef;
+      }
+      .box {
+        max-width: 300px;
+        margin: 0 auto;
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      #numDisplay {
+        font-size: 54px;
+        font-weight: bold;
+        margin: 15px 0;
+        color: #495057;
+      }
+      .buttons {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-bottom: 10px;
+      }
+      button {
+        padding: 8px 12px;
+        font-weight: bold;
+        cursor: pointer;
+        border-radius: 4px;
+        border: 1px solid #ced4da;
+        background: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <h3>Bộ Đếm Thông Minh</h3>
+      <div id="numDisplay">0</div>
+      <div class="buttons">
+        <button id="btnSub">-1</button>
+        <button id="btnAdd">+1</button>
+        <button
+          id="btnAddFast"
+          style="background: #28a745; color: white; border: none"
+        >
+          +10
+        </button>
+      </div>
+      <button
+        id="btnReset"
+        style="
+          width: 100%;
+          background: #dc3545;
+          color: white;
+          border: none;
+          padding: 8px;
+        "
+      >
+        Reset
+      </button>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        let currentVal = 0;
+
+        function refreshUI() {
+          $("#numDisplay").text(currentVal);
+          // Thay đổi màu sắc theo sắc thái giá trị đại số
+          if (currentVal > 0) $("#numDisplay").css("color", "#28a745");
+          else $("#numDisplay").css("color", "#495057");
+        }
+
+        $("#btnAdd").click(function () {
+          currentVal += 1;
+          refreshUI();
+        });
+
+        $("#btnAddFast").click(function () {
+          // Mở rộng: Tăng nhanh một lúc cộng dồn thêm 10 đơn vị
+          currentVal += 10;
+          refreshUI();
+        });
+
+        $("#btnSub").click(function () {
+          // Mở rộng: Ràng buộc quy tắc không cho số đếm giảm xuống dưới ngưỡng số 0 âm
+          if (currentVal > 0) {
+            currentVal -= 1;
+          } else {
+            alert(
+              "Hệ thống quy định bộ đếm không được phép hạ xuống giá trị âm!",
+            );
+          }
+          refreshUI();
+        });
+
+        $("#btnReset").click(function () {
+          currentVal = 0;
+          refreshUI();
+        });
+      });
+    </script>
+  </body>
+</html>

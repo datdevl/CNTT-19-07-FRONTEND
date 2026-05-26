@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bài 10: Tải dữ liệu bằng Fetch API</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 30px;
+        background: #fafafa;
+      }
+      .list-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .user-card {
+        border-left: 4px solid #007bff;
+        padding: 10px 15px;
+        margin-bottom: 12px;
+        background: #f8f9fa;
+        border-radius: 0 4px 4px 0;
+      }
+      .user-name {
+        font-weight: bold;
+        color: #333;
+        font-size: 16px;
+      }
+      .user-info {
+        font-size: 14px;
+        color: #666;
+        margin-top: 4px;
+      }
+      .loading {
+        font-style: italic;
+        color: #888;
+        text-align: center;
+        padding: 20px;
+      }
+      .error-msg {
+        color: #dc3545;
+        background: #f8d7da;
+        padding: 15px;
+        border-radius: 4px;
+        text-align: center;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="list-container">
+      <h2>Danh Sách Thành Viên (API)</h2>
+      <div id="statusArea"></div>
+      <div id="dataList"></div>
+    </div>
+
+    <script>
+      // Thay đổi endpoint sang một API dummy công khai, hoạt động 100%
+      const API_URL = "https://jsonplaceholder.typicode.com/users";
+
+      async function loadUsers() {
+        const statusArea = document.getElementById("statusArea");
+        const dataList = document.getElementById("dataList");
+
+        // Hiển thị trạng thái Loading chờ phản hồi mạng
+        statusArea.innerHTML = `<div class="loading">⏳ Đang tải dữ liệu từ máy chủ, vui lòng đợi...</div>`;
+        dataList.innerHTML = "";
+
+        try {
+          const response = await fetch(API_URL);
+
+          // Kiểm tra nếu phản hồi từ server không thành công (ví dụ: lỗi 404, 500)
+          if (!response.ok) {
+            throw new Error(
+              `Lỗi kết nối Server! Mã trạng thái HTTP: ${response.status}`,
+            );
+          }
+
+          const users = await response.json();
+          statusArea.innerHTML = ""; // Xóa thông báo loading
+
+          // Kiểm tra xem mảng dữ liệu trả về có rỗng không
+          if (!users || users.length === 0) {
+            dataList.innerHTML = "<p>Không tìm thấy bản ghi dữ liệu nào!</p>";
+            return;
+          }
+
+          // Duyệt mảng cấu trúc JSON kết quả trả về để kết xuất HTML
+          users.forEach((user) => {
+            const card = document.createElement("div");
+            card.className = "user-card";
+
+            // Lưu ý: API mới trả về trường 'company.name' thay vì 'department'
+            // nên tôi điều chỉnh lại một chút để hiển thị dữ liệu đẹp hơn.
+            card.innerHTML = `
+                <div class="user-name">${user.name} (ID: ${user.id})</div>
+                <div class="user-info">
+                    Email: ${user.email || "Chưa cập nhật"} | 
+                    Công ty: ${user.company ? user.company.name : "Tự do"}
+                </div>
+            `;
+            dataList.appendChild(card);
+          });
+        } catch (error) {
+          // Bắt các lỗi về mạng (mất mạng, sai URL) hoặc lỗi xử lý logic bên trong try
+          statusArea.innerHTML = `<div class="error-msg">❌ Thất bại: ${error.message}</div>`;
+        }
+      }
+
+      // Tự động gọi kích hoạt lấy dữ liệu ngay khi vừa tải nạp trang hoàn tất
+      loadUsers();
+    </script>
+  </body>
+</html>

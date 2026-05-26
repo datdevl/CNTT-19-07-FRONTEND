@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bài 1: Tính chỉ số BMI</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 50px;
+        background-color: #f4f7f6;
+      }
+      .container {
+        max-width: 400px;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        width: 100%;
+        padding: 10px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #218838;
+      }
+      #result {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 4px;
+        font-weight: bold;
+        text-align: center;
+        display: none;
+      }
+      .gay {
+        background-color: #ffeeba;
+        color: #856404;
+      }
+      .binh-thuong {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .thua-can {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+      .beo-phi {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Tính chỉ số BMI</h2>
+      <div class="form-group">
+        <label for="height">Chiều cao (m):</label>
+        <input
+          type="number"
+          id="height"
+          step="0.01"
+          placeholder="Ví dụ: 1.65"
+        />
+      </div>
+      <div class="form-group">
+        <label for="weight">Cân nặng (kg):</label>
+        <input type="number" id="weight" step="0.1" placeholder="Ví dụ: 55" />
+      </div>
+      <button onclick="calculateBMI()">Tính toán</button>
+      <div id="result"></div>
+    </div>
+
+    <script>
+      function calculateBMI() {
+        const heightInput = document.getElementById("height").value;
+        const weightInput = document.getElementById("weight").value;
+        const resultDiv = document.getElementById("result");
+
+        resultDiv.style.display = "block";
+        resultDiv.className = "";
+
+        // Kiểm tra dữ liệu mở rộng
+        if (!heightInput || !weightInput) {
+          resultDiv.innerText = "Vui lòng nhập đầy đủ chiều cao và cân nặng!";
+          resultDiv.classList.add("error");
+          return;
+        }
+
+        const height = Number(heightInput);
+        const weight = Number(weightInput);
+
+        if (height <= 0 || weight <= 0) {
+          resultDiv.innerText = "Giá trị nhập vào phải lớn hơn 0!";
+          resultDiv.classList.add("error");
+          return;
+        }
+
+        // Tính toán BMI
+        const bmi = Number((weight / (height * height)).toFixed(2));
+        let classification = "";
+        let className = "";
+
+        if (bmi < 18.5) {
+          classification = "Gầy";
+          className = "gay";
+        } else if (bmi >= 18.5 && bmi < 24.9) {
+          classification = "Bình thường";
+          className = "binh-thuong";
+        } else if (bmi >= 24.9 && bmi < 29.9) {
+          classification = "Thừa cân";
+          className = "thua-can";
+        } else {
+          classification = "Béo phì";
+          className = "beo-phi";
+        }
+
+        resultDiv.innerText = `Chỉ số BMI của bạn là: ${bmi} (${classification})`;
+        resultDiv.classList.add(className);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bài 11: Tra cứu chi tiết theo ID</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f1f3f5;
+        padding: 40px;
+      }
+      .search-box {
+        max-width: 500px;
+        margin: 0 auto;
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      }
+      .search-bar {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+      .search-bar input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+      button {
+        padding: 10px 15px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      .detail-card {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 15px;
+        display: none;
+        line-height: 1.8;
+      }
+      .detail-card h4 {
+        margin-top: 0;
+        color: #007bff;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 5px;
+      }
+      .alert {
+        padding: 12px;
+        background-color: #fff3cd;
+        color: #856404;
+        border-radius: 4px;
+        display: none;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="search-box">
+      <h3>Tra Cứu Thông Tin Sinh Viên</h3>
+      <div class="search-bar">
+        <input
+          type="text"
+          id="studentIdInput"
+          placeholder="Nhập mã định danh ID (Ví dụ: 1, 2...)"
+        />
+        <button onclick="lookupStudent()">Tìm</button>
+        <button onclick="clearSearch()" style="background: #6c757d">Xóa</button>
+      </div>
+
+      <div class="alert" id="alertBox"></div>
+
+      <div class="detail-card" id="detailCard">
+        <h4>Hồ Sơ Chi Tiết Sinh Viên</h4>
+        <div>
+          <strong>Mã số sinh viên (ID):</strong> <span id="txtId"></span>
+        </div>
+        <div><strong>Họ và Tên:</strong> <span id="txtName"></span></div>
+        <div><strong>Lớp quản lý:</strong> <span id="txtClass"></span></div>
+        <div><strong>Điểm tích lũy:</strong> <span id="txtGpa"></span></div>
+      </div>
+    </div>
+
+    <script>
+      const BASE_API =
+        "https://65fb18da14650eb21009a7bf.mockapi.io/api/v1/students";
+
+      async function lookupStudent() {
+        const idVal = document.getElementById("studentIdInput").value.trim();
+        const alertBox = document.getElementById("alertBox");
+        const detailCard = document.getElementById("detailCard");
+
+        alertBox.style.display = "none";
+        detailCard.style.display = "none";
+
+        if (!idVal) {
+          alertBox.innerText = "Vui lòng điền mã số ID để thực hiện tìm kiếm!";
+          alertBox.style.display = "block";
+          return;
+        }
+
+        try {
+          // Gửi tham số ID động trực tiếp vào chuỗi định tuyến Endpoint đường dẫn URL
+          const response = await fetch(`${BASE_API}/${idVal}`);
+
+          if (response.status === 404) {
+            alertBox.innerText = `⚠️ Lỗi: Không tìm thấy bất kỳ dữ liệu nào tương ứng với mã định danh ID = ${idVal}`;
+            alertBox.style.display = "block";
+            return;
+          }
+
+          if (!response.ok) {
+            throw new Error(
+              "Lỗi hệ thống máy chủ đường truyền không phản hồi.",
+            );
+          }
+
+          const student = await response.json();
+
+          // Đổ nạp phân tách dữ liệu phản hồi JSON vào cấu trúc cây DOM
+          document.getElementById("txtId").innerText = student.id;
+          document.getElementById("txtName").innerText = student.name;
+          document.getElementById("txtClass").innerText =
+            student.class || "Chưa phân lớp";
+          document.getElementById("txtGpa").innerText = student.gpa || "N/A";
+
+          detailCard.style.display = "block";
+        } catch (error) {
+          alertBox.innerText =
+            "❌ Đã xảy ra lỗi trong quá trình kết nối API: " + error.message;
+          alertBox.style.display = "block";
+        }
+      }
+
+      function clearSearch() {
+        // Mở rộng: Hàm dọn dẹp sạch giao diện làm mới ô tìm kiếm tiện lợi
+        document.getElementById("studentIdInput").value = "";
+        document.getElementById("alertBox").style.display = "none";
+        document.getElementById("detailCard").style.display = "none";
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bài 13: Ẩn hiện nội dung bằng jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 40px;
+      }
+      .content-box {
+        max-width: 400px;
+        margin: 20px auto;
+        padding: 25px;
+        background: #e3f2fd;
+        border: 1px solid #90caf9;
+        border-radius: 6px;
+      }
+      .btn-panel {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 15px;
+      }
+      button {
+        padding: 8px 15px;
+        font-weight: bold;
+        cursor: pointer;
+        border-radius: 4px;
+        border: 1px solid #007bff;
+        background: #fff;
+        color: #007bff;
+      }
+      #btnSmartToggle {
+        background: #007bff;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="content-box" id="targetBox">
+      <h3>Khối Nội Dung Bí Mật 🤫</h3>
+      <p>
+        Bạn có thể điều khiển cấu trúc khối hộp này bằng cách áp dụng các hàm
+        cốt lõi vô cùng mạnh mẽ hiệu quả của thư viện jQuery.
+      </p>
+    </div>
+
+    <div class="btn-panel">
+      <button id="btnHide">Ẩn Đi (Hide)</button>
+      <button id="btnShow">Hiện Lên (Show)</button>
+      <button id="btnSmartToggle">Chuyển trạng thái: Đang Hiện</button>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        // Đăng ký sự kiện Click bằng cú pháp jQuery Selecor ngắn gọn
+        $("#btnHide").click(function () {
+          $("#targetBox").hide(300, updateSmartButtonLabel);
+        });
+
+        $("#btnShow").click(function () {
+          $("#targetBox").show(300, updateSmartButtonLabel);
+        });
+
+        $("#btnSmartToggle").click(function () {
+          // Áp dụng toggle hiệu ứng đảo ngược tự động trạng thái ẩn/hiện
+          $("#targetBox").toggle(300, function () {
+            updateSmartButtonLabel();
+          });
+        });
+
+        function updateSmartButtonLabel() {
+          // Mở rộng: Sử dụng hàm :visible đặc hữu của jQuery để nhận dạng chính xác trạng thái UI
+          if ($("#targetBox").is(":visible")) {
+            $("#btnSmartToggle").text("Chuyển trạng thái: Đang Hiện");
+          } else {
+            $("#btnSmartToggle").text("Chuyển trạng thái: Đang Ẩn");
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

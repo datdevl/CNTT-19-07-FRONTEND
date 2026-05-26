@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bài 2: Tính toán khuyến mãi</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 50px;
+        background-color: #f4f7f6;
+      }
+      .container {
+        max-width: 450px;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #0069d9;
+      }
+      .invoice {
+        margin-top: 20px;
+        border-top: 2px dashed #ccc;
+        padding-top: 15px;
+        display: none;
+        line-height: 1.6;
+      }
+      .invoice-line {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+      .total {
+        font-weight: bold;
+        color: red;
+        font-size: 18px;
+      }
+      .free-ship {
+        color: green;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Hóa Đơn Thanh Toán</h2>
+      <div class="form-group">
+        <label for="orderValue">Giá trị đơn hàng (VND):</label>
+        <input type="number" id="orderValue" placeholder="Nhập tổng số tiền" />
+      </div>
+      <div class="form-group">
+        <label for="memberClass">Hạng thành viên:</label>
+        <select id="memberClass">
+          <option value="Standard">Standard (Thường)</option>
+          <option value="Silver">Silver (Bạc)</option>
+          <option value="Gold">Gold (Vàng)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="couponCode">Mã giảm giá (Nếu có):</label>
+        <input
+          type="text"
+          id="couponCode"
+          placeholder="Nhập mã như SALEOFF10"
+        />
+      </div>
+      <button onclick="processInvoice()">Tính toán đơn hàng</button>
+
+      <div class="invoice" id="invoice">
+        <div class="invoice-line">
+          <span>Tiền gốc:</span> <span id="lblOriginal">0đ</span>
+        </div>
+        <div class="invoice-line">
+          <span>Tỷ lệ giảm hạng thành viên:</span> <span id="lblRate">0%</span>
+        </div>
+        <div class="invoice-line">
+          <span>Số tiền giảm theo hạng:</span> <span id="lblDiscount">0đ</span>
+        </div>
+        <div class="invoice-line">
+          <span>Giảm giá từ voucher:</span> <span id="lblVoucher">0đ</span>
+        </div>
+        <div class="invoice-line">
+          <span>Phí vận chuyển:</span> <span id="lblShip">30,000đ</span>
+        </div>
+        <div class="invoice-line total">
+          <span>Tổng thanh toán:</span> <span id="lblTotal">0đ</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function processInvoice() {
+        const orderInput = document.getElementById("orderValue").value;
+        const memberClass = document.getElementById("memberClass").value;
+        const couponCode = document.getElementById("couponCode").value.trim();
+        const invoiceDiv = document.getElementById("invoice");
+
+        if (!orderInput || Number(orderInput) < 0) {
+          alert("Vui lòng nhập giá trị đơn hàng hợp lệ!");
+          return;
+        }
+
+        const originalPrice = Number(orderInput);
+        let discountRate = 0;
+        let shippingFee = 30000;
+
+        // 1. Xác định tỷ lệ giảm theo khoảng tiền và hạng thành viên
+        if (originalPrice >= 100000 && originalPrice < 300000) {
+          discountRate =
+            memberClass === "Gold"
+              ? 0.08
+              : memberClass === "Silver"
+                ? 0.05
+                : 0.02;
+        } else if (originalPrice >= 300000 && originalPrice < 500000) {
+          discountRate =
+            memberClass === "Gold"
+              ? 0.12
+              : memberClass === "Silver"
+                ? 0.08
+                : 0.05;
+        } else if (originalPrice >= 500000) {
+          discountRate =
+            memberClass === "Gold"
+              ? 0.15
+              : memberClass === "Silver"
+                ? 0.1
+                : 0.07;
+        }
+
+        // 2. Tính tiền giảm theo hạng thành viên
+        const discountAmount = originalPrice * discountRate;
+
+        // 3. Tính toán mở rộng: Voucher cố định
+        let voucherDiscount = 0;
+        if (couponCode === "SALEOFF10") {
+          voucherDiscount = 10000;
+        }
+
+        // 4. Tính toán mở rộng: Miễn phí vận chuyển nếu đơn hàng lớn hơn 500k
+        if (originalPrice >= 500000) {
+          shippingFee = 0;
+        }
+
+        // 5. Tính tổng tiền thanh toán cuối cùng
+        let finalPay =
+          originalPrice - discountAmount - voucherDiscount + shippingFee;
+        if (finalPay < 0) finalPay = 0;
+
+        // Hiển thị định dạng tiền tệ VND
+        document.getElementById("lblOriginal").innerText =
+          originalPrice.toLocaleString("vi-VN") + " đ";
+        document.getElementById("lblRate").innerText = discountRate * 100 + "%";
+        document.getElementById("lblDiscount").innerText =
+          "-" + discountAmount.toLocaleString("vi-VN") + " đ";
+        document.getElementById("lblVoucher").innerText =
+          "-" + voucherDiscount.toLocaleString("vi-VN") + " đ";
+        document.getElementById("lblShip").innerText =
+          shippingFee === 0
+            ? "Miễn phí (0đ)"
+            : shippingFee.toLocaleString("vi-VN") + " đ";
+        document.getElementById("lblTotal").innerText =
+          finalPay.toLocaleString("vi-VN") + " đ";
+
+        invoiceDiv.style.display = "block";
+      }
+    </script>
+  </body>
+</html>

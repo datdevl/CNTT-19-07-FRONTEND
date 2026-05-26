@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bài 6: Quy trình tính hóa đơn bằng Callback</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 50px;
+        background: #f0f2f5;
+      }
+      .container {
+        max-width: 500px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .log-box {
+        background: #222;
+        color: #0f0;
+        padding: 15px;
+        font-family: monospace;
+        border-radius: 4px;
+        margin-top: 15px;
+        white-space: pre-line;
+        line-height: 1.5;
+      }
+      button {
+        background: #ffc107;
+        border: none;
+        padding: 10px 15px;
+        font-weight: bold;
+        cursor: pointer;
+        border-radius: 4px;
+        width: 100%;
+      }
+      button:hover {
+        background: #e0a800;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Chuỗi Xử Lý Đơn Hàng (Callback)</h2>
+      <p>
+        Nhấp chuột để chạy quy trình tính toán bất đồng bộ qua nhiều bước bao
+        gồm thuế VAT (Mở rộng):
+      </p>
+      <button onclick="runOrderWorkflow()">Chạy Quy Trình Tính Toán</button>
+      <div class="log-box" id="logConsole">> Hệ thống sẵn sàng...</div>
+    </div>
+
+    <script>
+      let logText = "";
+      function printLog(msg) {
+        logText += msg + "\n";
+        document.getElementById("logConsole").innerText = logText;
+      }
+
+      // 1. Hàm tính tiền gốc của sản phẩm
+      function getRawTotal(products, callback) {
+        printLog("Bước 1: Đang tổng hợp tiền hàng gốc...");
+        let raw = products.reduce((sum, p) => sum + p.price * p.qty, 0);
+        printLog(`-> Tiền hàng gốc: ${raw.toLocaleString()}đ`);
+        callback(raw);
+      }
+
+      // 2. Hàm áp dụng voucher giảm giá
+      function applyDiscount(amount, callback) {
+        printLog("Bước 2: Đang áp dụng chính sách giảm giá thương mại...");
+        let discount = amount > 1000000 ? 100000 : 20000; // Giảm 100k nếu đơn > 1 triệu
+        let afterDiscount = amount - discount;
+        printLog(
+          `-> Khấu trừ giảm giá: -${discount.toLocaleString()}đ (Còn lại: ${afterDiscount.toLocaleString()}đ)`,
+        );
+        callback(afterDiscount);
+      }
+
+      // 3. Hàm tính thuế VAT (Bước mở rộng)
+      function applyTaxVAT(amount, callback) {
+        printLog(
+          "Bước 3 (Mở rộng): Đang tính thuế giá trị gia tăng VAT 10%...",
+        );
+        let tax = amount * 0.1;
+        let afterTax = amount + tax;
+        printLog(
+          `-> Thuế VAT cộng thêm: +${tax.toLocaleString()}đ (Tổng sau thuế: ${afterTax.toLocaleString()}đ)`,
+        );
+        callback(afterTax);
+      }
+
+      // 4. Hàm tính toán chi phí vận chuyển kết thúc quy trình
+      function applyShipping(amount, callback) {
+        printLog("Bước 4: Đang tính toán cước phí vận chuyển...");
+        let shipFee = amount > 500000 ? 0 : 35000; // Miễn phí giao hàng trên 500k sau thuế
+        let finalTotal = amount + shipFee;
+        printLog(
+          `-> Cước phí vận chuyển: ${shipFee === 0 ? "Miễn phí" : shipFee.toLocaleString() + "đ"}`,
+        );
+        callback(finalTotal);
+      }
+
+      function runOrderWorkflow() {
+        logText = "> Khởi chạy quy trình xử lý đơn hàng...\n";
+        document.getElementById("logConsole").innerText = logText;
+
+        // Bộ dữ liệu mẫu đầu vào
+        const cart = [
+          { name: "Áo khoác", price: 600000, qty: 2 },
+          { name: "Quần Jean", price: 350000, qty: 1 },
+        ];
+
+        // Thực hiện lồng ghép chuỗi callback
+        getRawTotal(cart, function (price1) {
+          applyDiscount(price1, function (price2) {
+            applyTaxVAT(price2, function (price3) {
+              applyShipping(price3, function (finalPrice) {
+                printLog(`\n=== QUY TRÌNH HOÀN TẤT ===`);
+                printLog(
+                  `SỐ TIỀN KHÁCH PHẢI TRẢ: ${finalPrice.toLocaleString()} VNĐ`,
+                );
+              });
+            });
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

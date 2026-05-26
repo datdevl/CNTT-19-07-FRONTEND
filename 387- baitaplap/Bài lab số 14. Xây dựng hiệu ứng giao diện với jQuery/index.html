@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bài 14: Hiệu ứng giao diện nâng cao jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 40px;
+      }
+      .alert-panel {
+        max-width: 450px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #fff3cd;
+        border: 1px solid #ffeeba;
+        border-radius: 8px;
+        display: none;
+      }
+      .highlight-border {
+        border: 3px solid #dc3545 !important;
+        background-color: #f8d7da !important;
+        color: #721c24 !important;
+      }
+      .btn-group {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+      }
+      button {
+        padding: 8px 14px;
+        cursor: pointer;
+        font-weight: bold;
+        border-radius: 4px;
+        border: 1px solid #6c757d;
+        background: white;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Trình Diễn Hệ Thống Hiệu Ứng jQuery</h2>
+
+    <div class="alert-panel" id="effectBox">
+      <h4>🔔 Hộp Thông Báo Hệ Thống</h4>
+      <p>
+        Hộp thoại tương tác hỗ trợ hiệu ứng mượt mà như Fade (mờ dần) và Slide
+        (cuộn trượt) vô cùng chuyên nghiệp sinh động.
+      </p>
+    </div>
+
+    <div class="btn-group">
+      <button id="btnFadeIn">Fade In</button>
+      <button id="btnFadeOut">Fade Out</button>
+      <button id="btnSlideUp">Slide Up</button>
+      <button id="btnSlideDown">Slide Down</button>
+      <button
+        id="btnChainHighlight"
+        style="background: #dc3545; color: white; border: none"
+      >
+        Chaining + Highlight
+      </button>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        $("#btnFadeIn").click(function () {
+          $("#effectBox").fadeIn("slow");
+        });
+        $("#btnFadeOut").click(function () {
+          $("#effectBox").fadeOut("fast");
+        });
+
+        $("#btnSlideUp").click(function () {
+          $("#effectBox").slideUp(400);
+        });
+        $("#btnSlideDown").click(function () {
+          $("#effectBox").slideDown(400);
+        });
+
+        // Mở rộng: Kỹ thuật viết chuỗi hàm liên tục (Chaining) kết hợp thay đổi class CSS tùy biến trạng thái
+        $("#btnChainHighlight").click(function () {
+          $("#effectBox")
+            .removeClass("highlight-border")
+            .slideUp(300)
+            .slideDown(400)
+            .addClass("highlight-border", 200)
+            .fadeIn(100);
+        });
+      });
+    </script>
+  </body>
+</html>

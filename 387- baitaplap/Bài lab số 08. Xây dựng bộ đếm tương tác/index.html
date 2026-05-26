@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bài 8: Bộ đếm tương tác số</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding-top: 50px;
+        background: #f4f4f9;
+      }
+      .counter-box {
+        max-width: 320px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      #counterValue {
+        font-size: 64px;
+        font-weight: bold;
+        margin: 20px 0;
+        color: #333;
+        transition: color 0.3s;
+      }
+      .btn-row {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      button {
+        padding: 10px 15px;
+        font-size: 16px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        background: #fff;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      button:hover {
+        background: #f0f0f0;
+      }
+      .btn-danger {
+        background: #dc3545;
+        color: white;
+        border: none;
+      }
+      .btn-danger:hover {
+        background: #bd2130;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="counter-box">
+      <h2>Bộ Đếm Tương Tác</h2>
+      <div id="counterValue">0</div>
+
+      <div class="btn-row">
+        <button onclick="changeCounter(-5)">-5</button>
+        <button onclick="changeCounter(-1)">-1</button>
+        <button onclick="changeCounter(1)">+1</button>
+        <button onclick="changeCounter(5)">+5</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn-danger" onclick="resetCounter()" style="width: 100%">
+          Đặt lại về 0
+        </button>
+      </div>
+    </div>
+
+    <script>
+      let count = 0;
+
+      function render() {
+        const display = document.getElementById("counterValue");
+        display.innerText = count;
+
+        // Mở rộng: Đổi màu số hiển thị theo giá trị đại số nhận dạng trực quan
+        if (count > 0) {
+          display.style.color = "#28a745"; // Xanh lá cây
+        } else if (count < 0) {
+          display.style.color = "#dc3545"; // Đỏ thẫm
+        } else {
+          display.style.color = "#333333"; // Đen xám mặc định
+        }
+      }
+
+      function changeCounter(amount) {
+        count += amount;
+        render();
+      }
+
+      function resetCounter() {
+        count = 0;
+        render();
+      }
+
+      // Khởi chạy đồng bộ giao diện lần đầu tiên
+      render();
+    </script>
+  </body>
+</html>

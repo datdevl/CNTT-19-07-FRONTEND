@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bài lab 19: Tải dữ liệu bằng Ajax</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 30px;
+        background: #fafafa;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+      }
+      th {
+        background-color: #007bff;
+        color: white;
+      }
+      tr:nth-child(even) {
+        background-color: #f8f9fa;
+      }
+      .loading {
+        text-align: center;
+        font-style: italic;
+        color: #666;
+        padding: 20px;
+      }
+      .error-msg {
+        color: #dc3545;
+        background: #f8d7da;
+        padding: 15px;
+        border-radius: 4px;
+        text-align: center;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Danh Sách Thành Viên (Bài lab 19)</h2>
+      <div id="statusArea"></div>
+
+      <table id="dataTable" style="display: none">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Họ và Tên</th>
+            <th>Email</th>
+            <th>Tên Công Ty</th>
+          </tr>
+        </thead>
+        <tbody id="userRows"></tbody>
+      </table>
+    </div>
+
+    <script>
+      const API_URL = "https://jsonplaceholder.typicode.com/users";
+
+      function loadUsers() {
+        // Yêu cầu mở rộng: Hiện thông báo đang tải dữ liệu
+        $("#statusArea").html(
+          `<div class="loading">⏳ Đang tải dữ liệu từ server, vui lòng đợi...</div>`,
+        );
+        $("#dataTable").hide();
+
+        // Gọi lệnh Ajax GET để lấy dữ liệu từ API
+        $.ajax({
+          url: API_URL,
+          method: "GET",
+          dataType: "json",
+          success: function (data) {
+            $("#statusArea").html(""); // Xóa thông báo loading
+            $("#dataTable").show();
+
+            // Hàm render dữ liệu ra HTML
+            let rowsHtml = "";
+            data.forEach((user) => {
+              rowsHtml += `
+                    <tr>
+                        <td>${user.id}</td>
+                        <td><strong>${user.name}</strong></td>
+                        <td>${user.email}</td>
+                        <td>${user.company ? user.company.name : "Tự do"}</td>
+                    </tr>
+                `;
+            });
+            $("#userRows").html(rowsHtml);
+          },
+          error: function (xhr, status, error) {
+            // Yêu cầu mở rộng: Xử lý trường hợp API lỗi trực quan lên UI
+            $("#statusArea").html(
+              `<div class="error-msg">❌ Thất bại: Không thể kết nối API (${xhr.status} - ${error})</div>`,
+            );
+          },
+        });
+      }
+
+      // Tự động tải dữ liệu khi trang được mở hoàn tất
+      $(document).ready(function () {
+        loadUsers();
+      });
+    </script>
+  </body>
+</html>

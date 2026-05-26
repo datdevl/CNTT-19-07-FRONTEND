@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bài lab 20: Thêm mới bằng Ajax POST</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 30px;
+        background: #fafafa;
+      }
+      .container {
+        max-width: 500px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      .form-group input {
+        width: 95%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .btn-submit {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        width: 100%;
+      }
+      .alert {
+        padding: 10px;
+        margin-top: 15px;
+        border-radius: 4px;
+        text-align: center;
+        display: none;
+        font-weight: bold;
+      }
+      .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .log-list {
+        margin-top: 20px;
+        background: #eee;
+        padding: 10px;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Thêm Mới Thành Viên (Bài lab 20)</h2>
+
+      <form id="addMemberForm">
+        <div class="form-group">
+          <label for="fullName">Họ và tên:</label>
+          <input type="text" id="fullName" placeholder="Nhập họ và tên..." />
+        </div>
+        <div class="form-group">
+          <label for="emailAddr">Địa chỉ Email:</label>
+          <input type="email" id="emailAddr" placeholder="Nhập email..." />
+        </div>
+        <div class="form-group">
+          <label for="deptName">Phòng ban:</label>
+          <input type="text" id="deptName" placeholder="Nhập phòng ban..." />
+        </div>
+        <button type="submit" class="btn-submit">Gửi Dữ Liệu (POST)</button>
+      </form>
+
+      <div id="msgAlert" class="alert alert-success"></div>
+
+      <div class="log-list">
+        <strong>Vừa thêm mới (Realtime UI):</strong>
+        <ul id="recentList">
+          <li>chưa có bản ghi nào vừa thêm...</li>
+        </ul>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "https://jsonplaceholder.typicode.com/users";
+
+      $(document).ready(function () {
+        $("#addMemberForm").on("submit", function (e) {
+          e.preventDefault(); // Ngăn chặn form tải lại trang
+
+          const name = $("#fullName").val().trim();
+          const email = $("#emailAddr").val().trim();
+          const dept = $("#deptName").val().trim();
+
+          // Yêu cầu mở rộng: Kiểm tra dữ liệu rỗng trước khi gửi
+          if (!name || !email || !dept) {
+            alert("Vui lòng điền đầy đủ cả 3 trường thông tin!");
+            return;
+          }
+
+          const payload = {
+            name: name,
+            email: email,
+            company: { name: dept },
+          };
+
+          // Gửi dữ liệu lên server bằng Ajax POST
+          $.ajax({
+            url: API_URL,
+            method: "POST",
+            data: JSON.stringify(payload),
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+              // Có thông báo thành công
+              $("#msgAlert")
+                .text("🎉 Đã thêm mới thành công lên Server giả lập!")
+                .fadeIn();
+
+              // Hiển thị trực tiếp dòng mới lên giao diện cập nhật ngay
+              $("#recentList").html(
+                `<li><strong>${name}</strong> (${email}) - Phòng: ${dept}</li>`,
+              );
+
+              // Yêu cầu mở rộng: Xóa sạch dữ liệu trong form sau khi gửi thành công
+              $("#addMemberForm")[0].reset();
+
+              setTimeout(() => {
+                $("#msgAlert").fadeOut();
+              }, 3000);
+            },
+            error: function () {
+              alert("Đã xảy ra lỗi khi thực hiện POST dữ liệu!");
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
